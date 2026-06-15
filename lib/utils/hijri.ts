@@ -24,34 +24,18 @@ export interface HijriDate {
   year: number
 }
 
+const HIJRI_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  calendar: "islamic-civil",
+  day: "numeric",
+  month: "numeric",
+  year: "numeric",
+})
+
 export function gregorianToHijri(date: Date = new Date()): HijriDate {
-  // Julian day number for the given Gregorian date (at UTC midnight).
-  const y = date.getFullYear()
-  const m = date.getMonth() + 1
-  const d = date.getDate()
-
-  const jd =
-    Math.floor((1461 * (y + 4800 + Math.floor((m - 14) / 12))) / 4) +
-    Math.floor((367 * (m - 2 - 12 * Math.floor((m - 14) / 12))) / 12) -
-    Math.floor((3 * Math.floor((y + 4900 + Math.floor((m - 14) / 12)) / 100)) / 4) +
-    d -
-    32075
-
-  // Julian day to tabular Islamic calendar (Kuwaiti algorithm).
-  const l1 = jd - 1948440 + 10632
-  const n = Math.floor((l1 - 1) / 10631)
-  const l2 = l1 - 10631 * n + 354
-  const j =
-    Math.floor((10985 - l2) / 5316) * Math.floor((50 * l2) / 17719) +
-    Math.floor(l2 / 5670) * Math.floor((43 * l2) / 15238)
-  const l3 =
-    l2 -
-    Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
-    Math.floor(j / 16) * Math.floor((15238 * j) / 43) +
-    29
-  const month = Math.floor((24 * l3) / 709)
-  const day = l3 - Math.floor((709 * month) / 24)
-  const year = 30 * n + j - 30
+  const parts = HIJRI_FORMATTER.formatToParts(date)
+  const day = Number(parts.find((p) => p.type === "day")?.value)
+  const month = Number(parts.find((p) => p.type === "month")?.value)
+  const year = Number(parts.find((p) => p.type === "year")?.value)
 
   return {
     day,

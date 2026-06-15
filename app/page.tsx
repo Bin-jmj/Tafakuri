@@ -43,8 +43,8 @@ export default async function HomePage() {
           <div className="absolute -left-8 -bottom-10 h-36 w-36 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
 
           <div className="relative flex items-center gap-4 mb-3">
-            <div className="flex h-16 w-16 md:h-20 md:w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl shadow-md ring-1 ring-primary/20">
-              <Image src="/logo.png" alt="Tafakuri" width={80} height={80} className="h-full w-full object-cover" priority />
+            <div className="flex h-16 w-16 md:h-20 md:w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl shadow-md ring-1 ring-primary/20 bg-primary p-2.5">
+              <Image src="/logo.png" alt="Tafakuri" width={80} height={80} className="h-full w-full object-contain" priority />
             </div>
             <div>
               <h1 className="text-2xl md:text-4xl font-bold tracking-tight">Karibu Tafakuri</h1>

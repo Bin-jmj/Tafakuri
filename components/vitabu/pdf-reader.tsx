@@ -81,10 +81,18 @@ export function PdfReader({ fileUrl, bookId }: PdfReaderProps) {
     const canvas = canvasRef.current
     const ctx = canvas.getContext("2d")
     if (!ctx) return
-    canvas.width = viewport.width
-    canvas.height = viewport.height
 
-    const task = page.render({ canvasContext: ctx, viewport, canvas })
+    // Render at devicePixelRatio so the canvas stays crisp on high-DPI/small
+    // screens — otherwise the backing store matches CSS pixels and looks
+    // blurry until the browser zoom forces a re-render at higher resolution.
+    const outputScale = window.devicePixelRatio || 1
+    canvas.width = Math.floor(viewport.width * outputScale)
+    canvas.height = Math.floor(viewport.height * outputScale)
+    canvas.style.width = `${viewport.width}px`
+    canvas.style.height = `${viewport.height}px`
+    const transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined
+
+    const task = page.render({ canvasContext: ctx, viewport, canvas, transform })
     renderTaskRef.current = task
     try {
       await task.promise

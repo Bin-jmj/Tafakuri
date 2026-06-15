@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/server"
 import { mapArticle, mapDua, mapHadith, mapQuranVerse } from "@/lib/mappers"
-import { VerseCard } from "@/components/quran/verse-card"
 import { DuaCard } from "@/components/dua/dua-card"
 import { ArticleCard } from "@/components/articles/article-card"
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
@@ -27,6 +26,7 @@ export default async function SearchPage({ searchParams }: Props) {
   let duas: ReturnType<typeof mapDua>[] = []
   let articles: ReturnType<typeof mapArticle>[] = []
   let media: { id: string; type: "book" | "audio" | "video"; title: string; author: string | null; category: string; cover_url: string | null }[] = []
+  const surahNames = new Map<string, string>()
 
   if (query) {
     const supabase = await createClient()
@@ -43,6 +43,15 @@ export default async function SearchPage({ searchParams }: Props) {
     duas = (duasRes.data ?? []).map(mapDua)
     articles = (articlesRes.data ?? []).map(mapArticle)
     media = mediaRes.data ?? []
+
+    if (verses.length > 0) {
+      const surahNumbers = Array.from(new Set(verses.map((v) => v.surahNumber)))
+      const { data: surahRows } = await supabase.from("surahs").select("id, name").in("id", surahNumbers)
+      const names = new Map((surahRows ?? []).map((s) => [s.id, s.name]))
+      verses.forEach((v) => {
+        surahNames.set(v.id, names.get(v.surahNumber) ?? `Surah ${v.surahNumber}`)
+      })
+    }
   }
 
   const totalResults = verses.length + hadiths.length + duas.length + articles.length + media.length
@@ -102,7 +111,7 @@ export default async function SearchPage({ searchParams }: Props) {
           </TabsList>
 
           <TabsContent value="all" className="space-y-4 mt-6">
-            {verses.map((verse) => <VerseCard key={verse.id} verse={verse} />)}
+            {verses.map((verse) => <VerseResultCard key={verse.id} verse={verse} surahName={surahNames.get(verse.id)} />)}
             {hadiths.map((hadith) => <HadithResultCard key={hadith.id} hadith={hadith} />)}
             {duas.map((dua) => <DuaCard key={dua.id} dua={dua} />)}
             {articles.map((article) => <ArticleCard key={article.id} article={article} />)}
@@ -110,7 +119,11 @@ export default async function SearchPage({ searchParams }: Props) {
           </TabsContent>
 
           <TabsContent value="quran" className="space-y-4 mt-6">
-            {verses.length === 0 ? <EmptyState text="Hakuna aya zilizopatikana." /> : verses.map((verse) => <VerseCard key={verse.id} verse={verse} />)}
+            {verses.length === 0 ? (
+              <EmptyState text="Hakuna aya zilizopatikana." />
+            ) : (
+              verses.map((verse) => <VerseResultCard key={verse.id} verse={verse} surahName={surahNames.get(verse.id)} />)
+            )}
           </TabsContent>
 
           <TabsContent value="hadith" className="space-y-4 mt-6">
@@ -141,6 +154,22 @@ function EmptyState({ text }: { text: string }) {
         <CardDescription>{text}</CardDescription>
       </CardHeader>
     </Card>
+  )
+}
+
+function VerseResultCard({ verse, surahName }: { verse: ReturnType<typeof mapQuranVerse>; surahName?: string }) {
+  return (
+    <Link href={`/quran/${verse.surahNumber}#aya-${verse.verseNumber}`}>
+      <Card className="hover:border-primary/30 transition-colors">
+        <CardContent className="p-4 space-y-2">
+          <Badge variant="secondary">
+            {surahName ?? `Surah ${verse.surahNumber}`} ({verse.surahNumber}:{verse.verseNumber})
+          </Badge>
+          <p className="arabic-text text-foreground leading-loose text-right">{verse.arabicText}</p>
+          <p className="text-sm text-muted-foreground line-clamp-2">{verse.swahiliTranslation}</p>
+        </CardContent>
+      </Card>
+    </Link>
   )
 }
 

@@ -3,8 +3,18 @@
 import { useCallback, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Bookmark, BookmarkCheck, Copy, Download, Share2, Sparkles } from "lucide-react"
+import { ArrowRight, Bookmark, BookmarkCheck, Copy, Image as ImageIcon, Share2, Sparkles } from "lucide-react"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { useBookmarks } from "@/hooks/use-bookmarks"
 import { useToast } from "@/hooks/use-toast"
 import { shareContent, copyToClipboard } from "@/lib/utils/share"
@@ -85,20 +95,20 @@ export function DailyVerseCard({ verse, surahName }: DailyVerseCardProps) {
       <CardHeader className="bg-gradient-to-br from-accent/10 to-primary/5">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <CardTitle className="text-2xl mb-1 flex items-center gap-2">
+            <CardTitle className="text-2xl mb-2 flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-accent" />
               Aya ya Leo
             </CardTitle>
-            <CardDescription className="text-base">{reference}</CardDescription>
+            <CardDescription className="text-base">
+              {new Date().toLocaleDateString("sw-TZ", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </CardDescription>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleBookmark}
-            aria-label={bookmarked ? "Ondoa alama" : "Weka alama"}
-          >
-            {bookmarked ? <BookmarkCheck className="h-5 w-5 text-primary" /> : <Bookmark className="h-5 w-5" />}
-          </Button>
+          <Badge variant="secondary">{reference}</Badge>
         </div>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col p-6 space-y-5">
@@ -131,17 +141,41 @@ export function DailyVerseCard({ verse, surahName }: DailyVerseCardProps) {
         </Link>
 
         <div className="grid grid-cols-3 gap-2 pt-1 mt-auto">
-          <Button variant="outline" size="sm" onClick={handleCopy} className="bg-transparent">
-            <Copy className="mr-1.5 h-4 w-4" />
-            Nakili
+          <Button variant="outline" size="sm" onClick={handleBookmark} className="bg-transparent">
+            {bookmarked ? <BookmarkCheck className="mr-1.5 h-4 w-4 text-primary" /> : <Bookmark className="mr-1.5 h-4 w-4" />}
+            {bookmarked ? "Imehifadhiwa" : "Hifadhi"}
           </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" disabled={downloading} className="bg-transparent">
+                <Copy className="mr-1.5 h-4 w-4" />
+                Nakili
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-xs">
+              <DialogHeader>
+                <DialogTitle>Nakili</DialogTitle>
+                <DialogDescription>Chagua unavyotaka kuhifadhi au kushiriki aya hii.</DialogDescription>
+              </DialogHeader>
+              <div className="grid grid-cols-2 gap-2">
+                <DialogClose asChild>
+                  <Button variant="outline" onClick={handleDownload} disabled={downloading}>
+                    <ImageIcon className="mr-1.5 h-4 w-4" />
+                    Pakua
+                  </Button>
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button variant="outline" onClick={handleCopy}>
+                    <Copy className="mr-1.5 h-4 w-4" />
+                    Nakili
+                  </Button>
+                </DialogClose>
+              </div>
+            </DialogContent>
+          </Dialog>
           <Button variant="outline" size="sm" onClick={handleShare} className="bg-transparent">
             <Share2 className="mr-1.5 h-4 w-4" />
             Shiriki
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleDownload} disabled={downloading} className="bg-transparent">
-            <Download className="mr-1.5 h-4 w-4" />
-            Pakua
           </Button>
         </div>
       </CardContent>

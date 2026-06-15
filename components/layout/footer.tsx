@@ -13,7 +13,9 @@ export function Footer() {
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Tafakuri" width={32} height={32} className="h-8 w-8 rounded-lg" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary p-1">
+                <Image src="/logo.png" alt="Tafakuri" width={32} height={32} className="h-full w-full object-contain" />
+              </div>
               <span className="font-bold text-lg">Tafakuri</span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">

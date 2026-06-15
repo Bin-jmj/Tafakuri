@@ -5,7 +5,16 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Bookmark, BookmarkCheck, Copy, Download, Share2, Sun, Moon, ChevronLeft, ChevronRight } from "lucide-react"
+import { Bookmark, BookmarkCheck, Copy, Image as ImageIcon, Share2, Sun, Moon, ChevronLeft, ChevronRight } from "lucide-react"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { useBookmarks } from "@/hooks/use-bookmarks"
 import { createClient } from "@/lib/supabase/client"
@@ -225,22 +234,42 @@ export function AdhkarWidget() {
 
             {/* Navigation + Actions */}
             <div className="flex flex-col gap-2 mt-auto">
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-3 gap-1.5">
                 <Button variant="outline" size="sm" onClick={handleBookmark} className="bg-transparent text-xs px-1">
                   {bookmarked ? <BookmarkCheck className="h-3.5 w-3.5 sm:mr-1 text-primary" /> : <Bookmark className="h-3.5 w-3.5 sm:mr-1" />}
                   <span className="hidden sm:inline">Hifadhi</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleCopy} className="bg-transparent text-xs px-1">
-                  <Copy className="h-3.5 w-3.5 sm:mr-1" />
-                  <span className="hidden sm:inline">Nakili</span>
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" disabled={downloading} className="bg-transparent text-xs px-1">
+                      <Copy className="h-3.5 w-3.5 sm:mr-1" />
+                      <span className="hidden sm:inline">Nakili</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-xs">
+                    <DialogHeader>
+                      <DialogTitle>Nakili</DialogTitle>
+                      <DialogDescription>Chagua unavyotaka kuhifadhi au kushiriki adhkar hii.</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid grid-cols-2 gap-2">
+                      <DialogClose asChild>
+                        <Button variant="outline" onClick={handleDownload} disabled={downloading}>
+                          <ImageIcon className="mr-1.5 h-4 w-4" />
+                          Pakua
+                        </Button>
+                      </DialogClose>
+                      <DialogClose asChild>
+                        <Button variant="outline" onClick={handleCopy}>
+                          <Copy className="mr-1.5 h-4 w-4" />
+                          Nakili
+                        </Button>
+                      </DialogClose>
+                    </div>
+                  </DialogContent>
+                </Dialog>
                 <Button variant="outline" size="sm" onClick={handleShare} className="bg-transparent text-xs px-1">
                   <Share2 className="h-3.5 w-3.5 sm:mr-1" />
                   <span className="hidden sm:inline">Shiriki</span>
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleDownload} disabled={downloading} className="bg-transparent text-xs px-1">
-                  <Download className="h-3.5 w-3.5 sm:mr-1" />
-                  <span className="hidden sm:inline">Pakua</span>
                 </Button>
               </div>
               <div className="flex items-center gap-2">
@@ -259,23 +288,4 @@ export function AdhkarWidget() {
       </CardContent>
     </Card>
   )
-}
-
-// Canvas text wrap helper
-function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number, font: string): string[] {
-  ctx.font = font
-  const words = text.split(" ")
-  const lines: string[] = []
-  let current = ""
-  for (const word of words) {
-    const test = current ? `${current} ${word}` : word
-    if (ctx.measureText(test).width > maxWidth && current) {
-      lines.push(current)
-      current = word
-    } else {
-      current = test
-    }
-  }
-  if (current) lines.push(current)
-  return lines
 }

@@ -38,7 +38,9 @@ export function MobileNav() {
         <SheetHeader>
           <SheetTitle className="text-left">
             <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Tafakuri" width={36} height={36} className="h-9 w-9 rounded-lg" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary p-1">
+                <Image src="/logo.png" alt="Tafakuri" width={36} height={36} className="h-full w-full object-contain" />
+              </div>
               <span className="font-bold text-lg">Tafakuri</span>
             </Link>
           </SheetTitle>

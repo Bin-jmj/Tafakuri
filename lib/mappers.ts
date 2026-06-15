@@ -2,6 +2,7 @@
 
 import type { Database } from "@/lib/supabase/types"
 import type { Adhkar, Article, Book, Dua, Hadith, QuranVerse, Surah } from "@/lib/types"
+import type { RotationSettings } from "@/lib/utils/rotation"
 
 type Tables = Database["public"]["Tables"]
 
@@ -75,6 +76,18 @@ export function mapArticle(row: Tables["articles"]["Row"]): Article {
     author: row.author,
     publishedDate: row.published_date,
     imageUrl: row.image_url ?? undefined,
+  }
+}
+
+export function mapRotationSettings(row: Tables["rotation_settings"]["Row"]): RotationSettings {
+  return {
+    adhkarAsubuhiStart: row.adhkar_asubuhi_start,
+    adhkarJioniStart: row.adhkar_jioni_start,
+    contentFajrStart: row.content_fajr_start,
+    contentDhuhrStart: row.content_dhuhr_start,
+    contentAsrStart: row.content_asr_start,
+    contentMaghribStart: row.content_maghrib_start,
+    contentIshaStart: row.content_isha_start,
   }
 }
 

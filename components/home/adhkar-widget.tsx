@@ -21,16 +21,20 @@ import { createClient } from "@/lib/supabase/client"
 import { mapAdhkar } from "@/lib/mappers"
 import type { Adhkar } from "@/lib/types"
 import { copyToClipboard, shareContent } from "@/lib/utils/share"
-import { getCurrentSlot } from "@/lib/utils/time"
+import { DEFAULT_ROTATION_SETTINGS, getAdhkarSlot, type RotationSettings } from "@/lib/utils/rotation"
 import { downloadCanvasAsImage, drawShareImage } from "@/lib/utils/share-image"
 
 const ROTATE_MS = 2 * 60 * 1000 // 2 minutes
 
-export function AdhkarWidget() {
+interface AdhkarWidgetProps {
+  rotationSettings?: RotationSettings
+}
+
+export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: AdhkarWidgetProps) {
   const { toast } = useToast()
   const { isBookmarked, toggleBookmark } = useBookmarks()
 
-  const [slot, setSlot] = useState<"asubuhi" | "jioni">(getCurrentSlot)
+  const [slot, setSlot] = useState<"asubuhi" | "jioni">(() => getAdhkarSlot(rotationSettings))
   const [adhkarList, setAdhkarList] = useState<Adhkar[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [timeLeft, setTimeLeft] = useState(ROTATE_MS)
@@ -135,7 +139,6 @@ export function AdhkarWidget() {
         noteLabel: "Faida",
         note: adhkar.benefit,
         source: adhkar.reference,
-        theme: isAsubuhi ? "teal" : "blue",
       })
       downloadCanvasAsImage(canvas, "adhkar")
       toast({ title: "Imepakuliwa", description: "Adhkar imepakuliwa kama picha" })

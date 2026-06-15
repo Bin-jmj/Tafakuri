@@ -8,15 +8,20 @@ import { TodayDateCard } from "@/components/home/today-date-card"
 import { Button } from "@/components/ui/button"
 import { BookOpen, FileText, HandHeart, Library, Scroll, Sparkles, ArrowRight, Newspaper } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
-import { mapArticle, mapHadith, mapQuranVerse } from "@/lib/mappers"
+import { mapArticle, mapHadith, mapQuranVerse, mapRotationSettings } from "@/lib/mappers"
 import { ArticleCard } from "@/components/articles/article-card"
+import { DEFAULT_ROTATION_SETTINGS, getContentSlotIndex } from "@/lib/utils/rotation"
 
 export default async function HomePage() {
   const supabase = await createClient()
 
+  const { data: rotationRow } = await supabase.from("rotation_settings").select("*").eq("id", 1).single()
+  const rotationSettings = rotationRow ? mapRotationSettings(rotationRow) : DEFAULT_ROTATION_SETTINGS
+  const contentSlot = getContentSlotIndex(rotationSettings)
+
   const [{ data: hadithRow }, { data: verseRow }, { data: articleRows }] = await Promise.all([
-    supabase.rpc("get_daily_hadith"),
-    supabase.rpc("get_daily_verse"),
+    supabase.rpc("get_daily_hadith", { p_slot: contentSlot }),
+    supabase.rpc("get_daily_verse", { p_slot: contentSlot }),
     supabase.from("articles").select("*").order("published_date", { ascending: false }).limit(3),
   ])
 
@@ -79,7 +84,7 @@ export default async function HomePage() {
           <h2 className="text-xl font-bold">Tafakuri ya Leo</h2>
         </div>
         <div className="space-y-6">
-          <AdhkarWidget />
+          <AdhkarWidget rotationSettings={rotationSettings} />
           <div className="grid gap-6 lg:grid-cols-2">
             {dailyVerse && <DailyVerseCard verse={dailyVerse} surahName={dailySurahName} />}
             {dailyHadith && <DailyHadithCard hadith={dailyHadith} />}

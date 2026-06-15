@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Moon,
   HardDrive,
+  Clock,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -67,6 +68,11 @@ const navItems = [
     label: "Mipangilio ya Drive",
     href: "/admin/settings/drive",
     icon: HardDrive,
+  },
+  {
+    label: "Muda wa Maudhui",
+    href: "/admin/settings/muda",
+    icon: Clock,
   },
 ]
 

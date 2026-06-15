@@ -60,7 +60,10 @@ export function DailyVerseCard({ verse, surahName }: DailyVerseCardProps) {
   }
 
   const handleCopy = async () => {
-    const text = `${reference}\n\n${verse.arabicText}\n\n${verse.swahiliTranslation}`
+    let text = `${reference}\n\n${verse.arabicText}\n\nTarjama:\n${verse.swahiliTranslation}`
+    if (verse.tafsir) {
+      text += `\n\nTafsiri:\n${verse.tafsir}`
+    }
     const copied = await copyToClipboard(text)
     toast(
       copied
@@ -74,12 +77,14 @@ export function DailyVerseCard({ verse, surahName }: DailyVerseCardProps) {
     try {
       const canvas = drawShareImage({
         title: "Aya ya Leo",
+        icon: "📖",
         meta: reference,
         arabicText: verse.arabicText,
+        arabicAlign: "right",
+        translationLabel: "Tarjama",
         translation: verse.swahiliTranslation,
-        noteLabel: "Fundisho",
-        note: verse.moral,
-        theme: "blue",
+        noteLabel: "Tafsiri",
+        note: verse.tafsir,
       })
       downloadCanvasAsImage(canvas, "aya")
       toast({ title: "Imepakuliwa", description: "Aya imepakuliwa kama picha" })

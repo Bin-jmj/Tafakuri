@@ -73,7 +73,6 @@ export function DailyHadithCard({ hadith }: DailyHadithCardProps) {
         arabicText: hadith.arabicText,
         translation: hadith.swahiliTranslation,
         source: `${hadith.narrator} — ${hadith.source}`,
-        theme: "teal",
       })
       downloadCanvasAsImage(canvas, "hadith")
       toast({ title: "Imepakuliwa", description: "Hadith imepakuliwa kama picha" })

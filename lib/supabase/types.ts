@@ -187,6 +187,22 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["bookmarks"]["Row"]>
         Relationships: []
       }
+      rotation_settings: {
+        Row: {
+          id: number
+          adhkar_asubuhi_start: string
+          adhkar_jioni_start: string
+          content_fajr_start: string
+          content_dhuhr_start: string
+          content_asr_start: string
+          content_maghrib_start: string
+          content_isha_start: string
+          updated_at: string
+        }
+        Insert: Partial<Database["public"]["Tables"]["rotation_settings"]["Row"]>
+        Update: Partial<Database["public"]["Tables"]["rotation_settings"]["Row"]>
+        Relationships: []
+      }
       google_drive_tokens: {
         Row: {
           id: number
@@ -224,9 +240,9 @@ export interface Database {
     }
     Views: { [_ in never]: never }
     Functions: {
-      get_daily_hadith: { Args: Record<string, never>; Returns: Database["public"]["Tables"]["hadiths"]["Row"] }
+      get_daily_hadith: { Args: { p_slot?: number }; Returns: Database["public"]["Tables"]["hadiths"]["Row"] }
       get_daily_dua: { Args: Record<string, never>; Returns: Database["public"]["Tables"]["duas"]["Row"] }
-      get_daily_verse: { Args: Record<string, never>; Returns: Database["public"]["Tables"]["quran_verses"]["Row"] }
+      get_daily_verse: { Args: { p_slot?: number }; Returns: Database["public"]["Tables"]["quran_verses"]["Row"] }
       search_quran_verses: { Args: { query: string; max_results?: number }; Returns: Database["public"]["Tables"]["quran_verses"]["Row"][] }
       search_hadiths: { Args: { query: string; max_results?: number }; Returns: Database["public"]["Tables"]["hadiths"]["Row"][] }
       search_duas: { Args: { query: string; max_results?: number }; Returns: Database["public"]["Tables"]["duas"]["Row"][] }

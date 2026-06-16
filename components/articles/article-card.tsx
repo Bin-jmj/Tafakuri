@@ -5,7 +5,7 @@ import type React from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Bookmark, BookmarkCheck, Calendar, User, Share2, Copy } from "lucide-react"
+import { Bookmark, BookmarkCheck, Calendar, User, Share2, Copy, Newspaper } from "lucide-react"
 import { useBookmarks } from "@/hooks/use-bookmarks"
 import { useToast } from "@/hooks/use-toast"
 import { shareContent, copyToClipboard } from "@/lib/utils/share"
@@ -66,17 +66,21 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
   return (
     <Card className="overflow-hidden transition-all hover:shadow-lg hover:border-primary h-full flex flex-col">
-      {article.imageUrl && (
-        <Link href={`/articles/${article.id}`}>
-          <div className="aspect-video w-full overflow-hidden bg-muted">
+      <Link href={`/articles/${article.id}`}>
+        <div className="aspect-video w-full overflow-hidden bg-muted">
+          {article.imageUrl ? (
             <img
               src={article.imageUrl || "/placeholder.svg"}
               alt={article.title}
               className="w-full h-full object-cover transition-transform hover:scale-105"
             />
-          </div>
-        </Link>
-      )}
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <Newspaper className="h-12 w-12 text-muted-foreground/30" />
+            </div>
+          )}
+        </div>
+      </Link>
       <CardHeader className="flex-1">
         <div className="flex items-start justify-between gap-2 mb-2">
           <Badge variant="secondary">{article.category}</Badge>

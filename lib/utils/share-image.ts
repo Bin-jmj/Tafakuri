@@ -1,8 +1,13 @@
 // Shared "share as image" template used by the adhkar, hadith and aya cards so
 // every downloaded image looks consistent.
+//
+// QUALITY: The canvas is rendered at 2× the logical size (SCALE = 2) so the
+// exported PNG is 1800 px wide — well above WhatsApp's display width on any
+// phone — eliminating the blur caused by upscaling a low-resolution canvas.
 
 const WIDTH = 900
 const HEIGHT = 600
+const SCALE = 2 // physical px = logical px × SCALE  →  1800 × 1200+ output
 
 export interface ShareImageOptions {
   /** Badge shown top-left, e.g. "Adhkar za Asubuhi", "Hadith ya Leo", "Aya ya Leo". */
@@ -57,11 +62,13 @@ function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number,
 
 export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
   const canvas = document.createElement("canvas")
-  canvas.width = WIDTH
-  canvas.height = HEIGHT
   const ctx = canvas.getContext("2d")!
 
-  // --- Pass 1: measure wrapped text to size the canvas to fit the full note/tafsir ---
+  // --- Pass 1: measure wrapped text at logical size to compute final height ---
+  // Canvas is at 1× here so measureText returns logical widths, then we resize.
+  canvas.width = WIDTH
+  canvas.height = HEIGHT
+
   const arabicFont = "bold 32px serif"
   const arabicLines = wrapText(ctx, opts.arabicText, WIDTH - 100, arabicFont).slice(0, 4)
   const trLines = wrapText(ctx, opts.translation, WIDTH - 120, "20px sans-serif").slice(0, 4)
@@ -74,15 +81,23 @@ export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
   contentHeight += trLines.length * 32
   if (noteLines.length) {
     contentHeight += 14 // gap before note box
-    contentHeight += 30 + noteLines.length * 22 // note box height
+    contentHeight += 30 + noteLines.length * 22
     if (opts.noteLabel) contentHeight += 22
   }
   contentHeight += 90 // source line + watermark
 
   const height = Math.max(HEIGHT, contentHeight)
-  canvas.height = height
 
-  // Background gradient - randomized for visual variety
+  // --- Upscale canvas to final HD size then scale context to match ---
+  // Every draw call below uses logical coordinates (WIDTH × height).
+  // The physical canvas is SCALE× larger in each dimension → sharp PNG output.
+  canvas.width = WIDTH * SCALE
+  canvas.height = height * SCALE
+  ctx.scale(SCALE, SCALE)
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = "high"
+
+  // Background gradient
   const [gradFrom, gradTo] = GRADIENT_THEMES[Math.floor(Math.random() * GRADIENT_THEMES.length)]
   const grad = ctx.createLinearGradient(0, 0, WIDTH, height)
   grad.addColorStop(0, gradFrom)
@@ -162,7 +177,7 @@ export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
     y += 32
   }
 
-  // Optional note (benefit/tafsir)
+  // Optional note (benefit / tafsir)
   if (noteLines.length) {
     y += 14
     const noteFont = "15px sans-serif"

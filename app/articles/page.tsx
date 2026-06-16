@@ -1,7 +1,8 @@
 import { ArticleCard } from "@/components/articles/article-card"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { PageHeaderCard } from "@/components/ui/page-header-card"
 import { createClient } from "@/lib/supabase/server"
 import { mapArticle } from "@/lib/mappers"
+import { FileText } from "lucide-react"
 
 export default async function ArticlesPage() {
   const supabase = await createClient()
@@ -10,14 +11,11 @@ export default async function ArticlesPage() {
 
   return (
     <div className="container mx-auto py-6 px-4">
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="text-3xl">Makala za Kiislamu</CardTitle>
-          <CardDescription className="text-base">
-            Soma makala mbalimbali kuhusu Uislamu na maisha ya kila siku
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <PageHeaderCard
+        icon={FileText}
+        title="Makala za Kiislamu"
+        description="Soma makala mbalimbali kuhusu Uislamu na maisha ya kila siku"
+      />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {articles.map((article) => (

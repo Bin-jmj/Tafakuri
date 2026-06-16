@@ -119,14 +119,14 @@ export function DailyHadithCard({ hadith }: DailyHadithCardProps) {
 
           <div className="grid grid-cols-3 gap-2 mt-auto">
             <Button variant="outline" size="sm" onClick={handleBookmark} className="bg-transparent">
-              {bookmarked ? <BookmarkCheck className="mr-1.5 h-4 w-4" /> : <Bookmark className="mr-1.5 h-4 w-4" />}
-              {bookmarked ? "Imehifadhiwa" : "Hifadhi"}
+              {bookmarked ? <BookmarkCheck className="h-4 w-4 sm:mr-1.5" /> : <Bookmark className="h-4 w-4 sm:mr-1.5" />}
+              <span className="hidden sm:inline">{bookmarked ? "Imehifadhiwa" : "Hifadhi"}</span>
             </Button>
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm" disabled={downloading} className="bg-transparent">
-                  <Copy className="mr-1.5 h-4 w-4" />
-                  Nakili
+                  <Copy className="h-4 w-4 sm:mr-1.5" />
+                  <span className="hidden sm:inline">Nakili</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-xs">
@@ -151,8 +151,8 @@ export function DailyHadithCard({ hadith }: DailyHadithCardProps) {
               </DialogContent>
             </Dialog>
             <Button variant="outline" size="sm" onClick={handleShare} className="bg-transparent">
-              <Share2 className="mr-1.5 h-4 w-4" />
-              Shiriki
+              <Share2 className="h-4 w-4 sm:mr-1.5" />
+              <span className="hidden sm:inline">Shiriki</span>
             </Button>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import { CollectionCard } from "@/components/dua/collection-card"
+import { PageHeaderCard } from "@/components/ui/page-header-card"
 import { createClient } from "@/lib/supabase/server"
 import { mapDua } from "@/lib/mappers"
+import { HandHeart } from "lucide-react"
 
 export default async function DuaPage() {
   const supabase = await createClient()
@@ -50,11 +52,12 @@ export default async function DuaPage() {
   ]
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-7xl">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-3 text-gray-900">Dhikr & Du&apos;a</h1>
-        <p className="text-xl text-primary font-semibold">Makusanyo Maalum</p>
-      </div>
+    <div className="container mx-auto py-6 px-4 max-w-7xl">
+      <PageHeaderCard
+        icon={HandHeart}
+        title="Dhikr & Du'a"
+        description="Makusanyo ya dua na adhkar zilizopangwa kwa ajili yako"
+      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {featuredCollections.map((collection) => (

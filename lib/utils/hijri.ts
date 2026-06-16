@@ -2,6 +2,10 @@
 // This is an approximation (+/- 1 day) commonly used for "today's date" display -
 // for exact moon-sighting dates, a local mosque announcement should be preferred.
 
+import { getPrayerTimes } from "./prayer-times"
+
+const TIMEZONE_OFFSET_MS = 3 * 3600 * 1000 // EAT (UTC+3), matches prayer-times.ts
+
 const HIJRI_MONTHS_SW = [
   "Muharram",
   "Safar",
@@ -32,7 +36,13 @@ const HIJRI_FORMATTER = new Intl.DateTimeFormat("en-US", {
 })
 
 export function gregorianToHijri(date: Date = new Date()): HijriDate {
-  const parts = HIJRI_FORMATTER.formatToParts(date)
+  // The Islamic day begins at Maghrib, not midnight - once today's Maghrib has
+  // passed, the Hijri date should already show tomorrow's date.
+  const eatNow = new Date(date.getTime() + TIMEZONE_OFFSET_MS)
+  const maghrib = getPrayerTimes(eatNow.getUTCFullYear(), eatNow.getUTCMonth() + 1, eatNow.getUTCDate()).maghrib
+  const effectiveDate = date.getTime() >= maghrib.getTime() ? new Date(date.getTime() + 24 * 3600 * 1000) : date
+
+  const parts = HIJRI_FORMATTER.formatToParts(effectiveDate)
   const day = Number(parts.find((p) => p.type === "day")?.value)
   const month = Number(parts.find((p) => p.type === "month")?.value)
   const year = Number(parts.find((p) => p.type === "year")?.value)

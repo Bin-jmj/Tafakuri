@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { BookOpen, Clock, FileText, Home, Library, Menu, Scroll, Search, User, HandHeart } from "lucide-react"
+import { BookOpen, Clock, FileText, Home, Library, Menu, Moon, Scroll, Search, Sun, User, HandHeart } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNextPrayer } from "@/hooks/use-next-prayer"
 
@@ -25,6 +27,9 @@ export function MobileNav() {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
   const nextPrayer = useNextPrayer()
+  const { resolvedTheme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -84,6 +89,21 @@ export function MobileNav() {
             )
           })}
         </nav>
+
+        <Separator className="mt-4" />
+
+        <Button
+          variant="ghost"
+          className="w-full justify-start gap-3 mt-2"
+          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+        >
+          {mounted && resolvedTheme === "dark" ? (
+            <Sun className="h-5 w-5 text-amber-400" />
+          ) : (
+            <Moon className="h-5 w-5 text-indigo-400" />
+          )}
+          {mounted && resolvedTheme === "dark" ? "Washa Mwanga" : "Zima Mwanga"}
+        </Button>
       </SheetContent>
     </Sheet>
   )

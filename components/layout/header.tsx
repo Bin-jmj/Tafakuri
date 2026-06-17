@@ -3,6 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { MobileNav } from "./mobile-nav"
@@ -24,6 +25,8 @@ export function Header() {
   const pathname = usePathname()
   const nextPrayer = useNextPrayer()
   const { resolvedTheme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -68,10 +71,10 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            title={resolvedTheme === "dark" ? "Washa mwanga" : "Zima mwanga"}
+            title={mounted && resolvedTheme === "dark" ? "Washa mwanga" : "Zima mwanga"}
             onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
           >
-            {resolvedTheme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {mounted && resolvedTheme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </Button>
           <Link href="/search">
             <Button variant="ghost" size="icon" className="ml-1" title="Tafuta">

@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register"
+import { InstallBanner } from "@/components/pwa/install-banner"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AutoTheme } from "@/components/auto-theme"
 import { createClient } from "@/lib/supabase/server"
@@ -39,6 +40,11 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Tafakuri",
   },
+  // Prevent all browser auto-translation — Quranic text must never be
+  // machine-translated as it would distort the meaning of the revelation.
+  other: {
+    google: "notranslate",
+  },
 }
 
 export const viewport: Viewport = {
@@ -57,7 +63,7 @@ export default async function RootLayout({
     : { sunriseTime: DEFAULT_ROTATION_SETTINGS.sunriseTime, sunsetTime: DEFAULT_ROTATION_SETTINGS.sunsetTime }
 
   return (
-    <html lang="sw" dir="ltr" suppressHydrationWarning>
+    <html lang="sw" dir="ltr" translate="no" suppressHydrationWarning>
       <body className={`${geist.variable} ${amiri.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           <AutoTheme sunrise={settings.sunriseTime} sunset={settings.sunsetTime} />
@@ -67,6 +73,7 @@ export default async function RootLayout({
           <Toaster />
           <Analytics />
           <ServiceWorkerRegister />
+          <InstallBanner />
         </ThemeProvider>
       </body>
     </html>

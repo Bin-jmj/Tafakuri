@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { CmsPageShell } from "@/components/admin/cms-page-shell"
 import { ContentDialog } from "@/components/admin/content-dialog"
 import { CmsFieldInput } from "./cms-field-input"
@@ -22,7 +22,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { Pencil, Trash2, Inbox } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useCmsResource } from "@/hooks/use-cms-resource"
-import type { CmsField, CmsResourceConfig } from "@/lib/cms/types"
+import type { CmsField, CmsFieldOption, CmsResourceConfig } from "@/lib/cms/types"
 
 type Row = Record<string, unknown> & { id: string }
 
@@ -34,6 +34,19 @@ export function CmsResourcePage({ config }: { config: CmsResourceConfig }) {
   const [form, setForm] = useState<Record<string, unknown>>(config.defaultValues)
   const [isSaving, setIsSaving] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [dynamicOptions, setDynamicOptions] = useState<Record<string, CmsFieldOption[]>>({})
+
+  useEffect(() => {
+    const keys = [...new Set(config.fields.filter((f) => f.optionsKey).map((f) => f.optionsKey!))]
+    if (keys.length === 0) return
+    Promise.all(
+      keys.map(async (key) => {
+        const res = await fetch(`/api/categories?type=${key}`)
+        const json = await res.json()
+        return [key, (json.data ?? []) as CmsFieldOption[]] as const
+      }),
+    ).then((entries) => setDynamicOptions(Object.fromEntries(entries)))
+  }, [config])
 
   function openAdd() {
     setEditing(null)
@@ -210,6 +223,7 @@ export function CmsResourcePage({ config }: { config: CmsResourceConfig }) {
             key={field.name}
             field={field}
             values={form}
+            dynamicOptions={dynamicOptions}
             onChange={(patch) => setForm((prev) => ({ ...prev, ...patch }))}
           />
         ))}

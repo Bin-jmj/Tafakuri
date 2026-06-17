@@ -24,6 +24,8 @@ export interface CmsField {
   placeholder?: string
   helpText?: string
   options?: CmsFieldOption[]
+  /** For select fields: fetch options from /api/categories?type=<key> at runtime. */
+  optionsKey?: string
   /** For type "drive-file": which Drive library folder to upload into. */
   driveType?: "book" | "audio" | "video"
   /** Shown as a column in the admin table. */

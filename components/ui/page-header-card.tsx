@@ -13,7 +13,7 @@ export function PageHeaderCard({ icon: Icon, title, description }: PageHeaderCar
     <Card className="mb-6 bg-gradient-to-br from-background to-muted/20 border-primary/10 hover:border-primary/30 transition-colors">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
+          <div className="p-2 bg-muted rounded-lg">
             <Icon className="h-6 w-6 text-primary" />
           </div>
           <div>

@@ -17,7 +17,7 @@ export function JuzList({ surahs }: JuzListProps) {
         const endSurah = surahs.find((s) => s.id === juz.endSurah)
 
         return (
-          <Link key={juz.number} href={`/quran/${juz.startSurah}`}>
+          <Link key={juz.number} href={`/quran/juz/${juz.number}`}>
             <Card className="transition-all hover:shadow-md hover:border-primary/30 cursor-pointer border p-4">
               <div className="flex items-center gap-4">
                 {/* Diamond number */}

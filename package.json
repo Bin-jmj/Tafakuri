@@ -7,7 +7,10 @@
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
-    "seed": "tsx --env-file=.env scripts/seed.ts"
+    "seed": "tsx --env-file=.env scripts/seed.ts",
+    "seed:quran": "tsx --env-file=.env scripts/seed-quran.ts",
+    "seed:hadiths": "tsx --env-file=.env scripts/seed-hadiths.ts",
+    "seed:duas": "tsx --env-file=.env scripts/seed-duas.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

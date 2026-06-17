@@ -29,7 +29,7 @@ export function MobileNav() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
+        <Button variant="ghost" size="icon" className="lg:hidden">
           <Menu className="h-6 w-6" />
           <span className="sr-only">Fungua menyu</span>
         </Button>
@@ -74,8 +74,8 @@ export function MobileNav() {
             return (
               <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
                 <Button
-                  variant={isActive ? "secondary" : "ghost"}
-                  className={cn("w-full justify-start gap-3", isActive && "bg-primary/10 text-primary")}
+                  variant="ghost"
+                  className={cn("w-full justify-start gap-3", isActive && "bg-muted text-primary font-medium")}
                 >
                   <Icon className="h-5 w-5" />
                   {item.label}

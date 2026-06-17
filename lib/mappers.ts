@@ -83,6 +83,9 @@ export function mapRotationSettings(row: Tables["rotation_settings"]["Row"]): Ro
   return {
     adhkarAsubuhiStart: row.adhkar_asubuhi_start,
     adhkarJioniStart: row.adhkar_jioni_start,
+    adhkarRotateSeconds: row.adhkar_rotate_seconds ?? 30,
+    sunriseTime: row.sunrise_time?.slice(0, 5) ?? "06:00",
+    sunsetTime: row.sunset_time?.slice(0, 5) ?? "18:00",
     contentFajrStart: row.content_fajr_start,
     contentDhuhrStart: row.content_dhuhr_start,
     contentAsrStart: row.content_asr_start,

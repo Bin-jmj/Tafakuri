@@ -33,13 +33,12 @@ export function PdfReader({ fileUrl, bookId }: PdfReaderProps) {
     let active = true
     ;(async () => {
       try {
-        // Use the legacy build: it includes polyfills (e.g. Uint8Array.prototype.toHex)
-        // required by browsers like Brave or 360 Extreme that lack newer JS APIs.
+        // Use the legacy build for polyfill coverage (e.g. Uint8Array.prototype.toHex).
+        // Worker is served from CDN so iOS Safari can load it reliably — the
+        // import.meta.url approach fails on iOS when the bundled chunk URL does
+        // not resolve to a valid worker script path.
         const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs")
-        pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-          "pdfjs-dist/legacy/build/pdf.worker.min.mjs",
-          import.meta.url,
-        ).toString()
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`
 
         const doc = await pdfjsLib.getDocument({ url: new URL(fileUrl, window.location.origin) }).promise
         if (!active) return

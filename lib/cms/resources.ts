@@ -1,11 +1,6 @@
 import { z } from "zod"
 import type { CmsResourceConfig } from "./types"
 
-const HADITH_CATEGORIES = ["Imani", "Ibada", "Akhlaq", "Familia", "Elimu", "Sadaka", "Adabu", "Afya", "Faraja"]
-const DUA_CATEGORIES = ["Kuanza Jambo", "Shukrani", "Afya", "Elimu", "Faraja", "Imani", "Familia", "Safari", "Chakula"]
-const ARTICLE_CATEGORIES = ["Hadith", "Fiqh", "Tafsiri", "Akida", "Siira", "Lugha", "Tarbiya"]
-const MEDIA_CATEGORIES = ["Hadith", "Fiqh", "Tafsiri", "Akida", "Siira", "Lugha", "Tarbiya"]
-
 const optionalText = z.string().trim().optional().or(z.literal("")).transform((v) => (v ? v : null))
 
 export const hadithsResource: CmsResourceConfig = {
@@ -23,7 +18,7 @@ export const hadithsResource: CmsResourceConfig = {
     { name: "translation_sw", label: "Tafsiri ya Kiswahili", type: "textarea", showInTable: true, searchable: true },
     { name: "narrator", label: "Mpokezi", type: "text", showInTable: true, searchable: true },
     { name: "source", label: "Chanzo", type: "text", showInTable: true, searchable: true },
-    { name: "category", label: "Kategoria", type: "select", options: HADITH_CATEGORIES.map((c) => ({ label: c, value: c })), showInTable: true, searchable: true },
+    { name: "category", label: "Kategoria", type: "select", optionsKey: "hadith", showInTable: true, searchable: true },
   ],
   schema: z.object({
     arabic_text: z.string().min(1, "Maandishi ya Kiarabu yanahitajika"),
@@ -37,7 +32,7 @@ export const hadithsResource: CmsResourceConfig = {
     translation_sw: "",
     narrator: "",
     source: "",
-    category: HADITH_CATEGORIES[0],
+    category: "",
   },
 }
 
@@ -55,7 +50,7 @@ export const duasResource: CmsResourceConfig = {
     { name: "arabic_text", label: "Maandishi ya Kiarabu", type: "arabic" },
     { name: "translation_sw", label: "Tafsiri ya Kiswahili", type: "textarea", showInTable: true, searchable: true },
     { name: "transliteration", label: "Matamshi (Lafudhi)", type: "text" },
-    { name: "category", label: "Kategoria", type: "select", options: DUA_CATEGORIES.map((c) => ({ label: c, value: c })), showInTable: true, searchable: true },
+    { name: "category", label: "Kategoria", type: "select", optionsKey: "dua", showInTable: true, searchable: true },
     { name: "occasion", label: "Tukio", type: "text", showInTable: true, searchable: true },
     { name: "reference", label: "Marejeo", type: "text" },
   ],
@@ -71,7 +66,7 @@ export const duasResource: CmsResourceConfig = {
     arabic_text: "",
     translation_sw: "",
     transliteration: "",
-    category: DUA_CATEGORIES[0],
+    category: "",
     occasion: "",
     reference: "",
   },
@@ -132,7 +127,7 @@ export const articlesResource: CmsResourceConfig = {
   fields: [
     { name: "title", label: "Kichwa", type: "text", showInTable: true, searchable: true },
     { name: "content", label: "Maudhui", type: "textarea", searchable: true },
-    { name: "category", label: "Kategoria", type: "select", options: ARTICLE_CATEGORIES.map((c) => ({ label: c, value: c })), showInTable: true, searchable: true },
+    { name: "category", label: "Kategoria", type: "select", optionsKey: "article", showInTable: true, searchable: true },
     { name: "author", label: "Mwandishi", type: "text", showInTable: true, searchable: true },
     { name: "published_date", label: "Tarehe ya Kuchapisha", type: "date", showInTable: true },
     { name: "image_url", label: "Picha ya Jalada", type: "image" },
@@ -148,7 +143,7 @@ export const articlesResource: CmsResourceConfig = {
   defaultValues: {
     title: "",
     content: "",
-    category: ARTICLE_CATEGORIES[0],
+    category: "",
     author: "",
     published_date: new Date().toISOString().slice(0, 10),
     image_url: "",
@@ -217,7 +212,7 @@ function mediaResource(type: "book" | "audio" | "video"): CmsResourceConfig {
       { name: "title", label: "Jina", type: "text", showInTable: true, searchable: true },
       { name: "author", label: "Mwandishi / Mzungumzaji", type: "text", showInTable: true, searchable: true },
       { name: "description", label: "Maelezo", type: "textarea", searchable: true },
-      { name: "category", label: "Kategoria", type: "select", options: MEDIA_CATEGORIES.map((c) => ({ label: c, value: c })), showInTable: true, searchable: true },
+      { name: "category", label: "Kategoria", type: "select", optionsKey: "media", showInTable: true, searchable: true },
       { name: "language", label: "Lugha", type: "text" },
       { name: "cover_url", label: "Picha ya Jalada", type: "image" },
       { name: "file", label: "Faili (Drive)", type: "drive-file", driveType: type, showInTable: true },
@@ -245,7 +240,7 @@ function mediaResource(type: "book" | "audio" | "video"): CmsResourceConfig {
       title: "",
       author: "",
       description: "",
-      category: MEDIA_CATEGORIES[0],
+      category: "",
       language: "Swahili",
       cover_url: "",
       drive_file_id: "",
@@ -263,6 +258,47 @@ export const mediaBooksResource = mediaResource("book")
 export const mediaAudioResource = mediaResource("audio")
 export const mediaVideoResource = mediaResource("video")
 
+const CATEGORY_TYPES = [
+  { label: "Hadithi", value: "hadith" },
+  { label: "Dua", value: "dua" },
+  { label: "Adhkar", value: "adhkar" },
+  { label: "Makala", value: "article" },
+  { label: "Midia", value: "media" },
+]
+
+export const categoriesResource: CmsResourceConfig = {
+  key: "categories",
+  table: "categories",
+  titleSingular: "Kategoria",
+  titlePlural: "Kategoria",
+  description: "Simamia kategoria za maudhui yote — hadithi, dua, adhkar, makala na midia",
+  addLabel: "Ongeza Kategoria",
+  searchPlaceholder: "Tafuta kategoria...",
+  primaryColumn: "name",
+  orderBy: { column: "sort_order", ascending: true },
+  fields: [
+    { name: "name", label: "Jina la Kategoria", type: "text", showInTable: true, searchable: true },
+    { name: "slug", label: "Slug (URL)", type: "text", showInTable: true, helpText: "Herufi ndogo, nambari na kistari tu. Mfano: kila-siku" },
+    { name: "type", label: "Aina ya Maudhui", type: "select", options: CATEGORY_TYPES, showInTable: true },
+    { name: "description", label: "Maelezo (Hiari)", type: "textarea" },
+    { name: "sort_order", label: "Mpangilio", type: "number", showInTable: true },
+  ],
+  schema: z.object({
+    name: z.string().min(1, "Jina linahitajika"),
+    slug: z.string().min(1, "Slug inahitajika").regex(/^[a-z0-9-]+$/, "Slug iwe na herufi ndogo na kistari tu"),
+    type: z.enum(["hadith", "dua", "adhkar", "article", "media"]),
+    description: z.string().trim().optional().or(z.literal("")).transform((v) => (v ? v : null)),
+    sort_order: z.coerce.number().int().default(0),
+  }),
+  defaultValues: {
+    name: "",
+    slug: "",
+    type: "hadith",
+    description: "",
+    sort_order: 0,
+  },
+}
+
 export const cmsResources: Record<string, CmsResourceConfig> = {
   [hadithsResource.key]: hadithsResource,
   [duasResource.key]: duasResource,
@@ -272,4 +308,5 @@ export const cmsResources: Record<string, CmsResourceConfig> = {
   [mediaBooksResource.key]: mediaBooksResource,
   [mediaAudioResource.key]: mediaAudioResource,
   [mediaVideoResource.key]: mediaVideoResource,
+  [categoriesResource.key]: categoriesResource,
 }

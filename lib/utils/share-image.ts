@@ -225,8 +225,19 @@ export function buildShareFilename(prefix: string, ext = "png"): string {
 }
 
 export function downloadCanvasAsImage(canvas: HTMLCanvasElement, prefix: string) {
+  const dataUrl = canvas.toDataURL("image/png")
+
+  // iOS Safari ignores <a download> for data: URLs — open in new tab so the
+  // user can long-press the image to save it to Photos instead.
+  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    window.open(dataUrl, "_blank")
+    return
+  }
+
   const link = document.createElement("a")
   link.download = buildShareFilename(prefix)
-  link.href = canvas.toDataURL("image/png")
+  link.href = dataUrl
+  document.body.appendChild(link)
   link.click()
+  document.body.removeChild(link)
 }

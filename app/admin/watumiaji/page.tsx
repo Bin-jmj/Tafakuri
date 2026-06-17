@@ -121,8 +121,8 @@ export default function WatumiajiPage() {
               <Card key={user.id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-sm font-bold text-primary">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                      <span className="text-sm font-bold text-primary-foreground">
                         {user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
                       </span>
                     </div>

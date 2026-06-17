@@ -10,27 +10,28 @@ import { Spinner } from "@/components/ui/spinner"
 import { useToast } from "@/hooks/use-toast"
 import { FileCheck2, ImagePlus, Upload, X } from "lucide-react"
 import { cn } from "@/lib/utils"
-import type { CmsField } from "@/lib/cms/types"
+import type { CmsField, CmsFieldOption } from "@/lib/cms/types"
 
 interface CmsFieldInputProps {
   field: CmsField
   values: Record<string, unknown>
   onChange: (patch: Record<string, unknown>) => void
+  dynamicOptions?: Record<string, CmsFieldOption[]>
 }
 
-export function CmsFieldInput({ field, values, onChange }: CmsFieldInputProps) {
+export function CmsFieldInput({ field, values, onChange, dynamicOptions }: CmsFieldInputProps) {
   const value = values[field.name]
 
   return (
     <div className="space-y-1.5">
       {field.type !== "boolean" && <Label htmlFor={field.name}>{field.label}</Label>}
-      <FieldControl field={field} value={value} values={values} onChange={onChange} />
+      <FieldControl field={field} value={value} values={values} dynamicOptions={dynamicOptions} onChange={onChange} />
       {field.helpText && <p className="text-xs text-muted-foreground">{field.helpText}</p>}
     </div>
   )
 }
 
-function FieldControl({ field, value, values, onChange }: { field: CmsField; value: unknown; values: Record<string, unknown>; onChange: (patch: Record<string, unknown>) => void }) {
+function FieldControl({ field, value, values, dynamicOptions, onChange }: { field: CmsField; value: unknown; values: Record<string, unknown>; dynamicOptions?: Record<string, CmsFieldOption[]>; onChange: (patch: Record<string, unknown>) => void }) {
   switch (field.type) {
     case "text":
       return (
@@ -82,19 +83,23 @@ function FieldControl({ field, value, values, onChange }: { field: CmsField; val
           onChange={(e) => onChange({ [field.name]: e.target.value })}
         />
       )
-    case "select":
+    case "select": {
+      const opts = (field.optionsKey && dynamicOptions?.[field.optionsKey])
+        ? dynamicOptions[field.optionsKey]
+        : (field.options ?? [])
       return (
         <Select value={(value as string) ?? ""} onValueChange={(v) => onChange({ [field.name]: v })}>
           <SelectTrigger id={field.name}>
-            <SelectValue />
+            <SelectValue placeholder="Chagua..." />
           </SelectTrigger>
           <SelectContent>
-            {field.options?.map((opt) => (
+            {opts.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       )
+    }
     case "boolean":
       return (
         <button

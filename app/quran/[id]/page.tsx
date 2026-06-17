@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation"
 import { VerseCard } from "@/components/quran/verse-card"
+import { BismillahCard } from "@/components/quran/bismillah-card"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/server"
@@ -52,6 +53,8 @@ export default async function QuranSurahPage({ params }: QuranSurahPageProps) {
           </div>
         </CardHeader>
       </Card>
+
+      {surahId !== 1 && surahId !== 9 && <BismillahCard />}
 
       <div className="space-y-4">
         {verses.length > 0 ? (

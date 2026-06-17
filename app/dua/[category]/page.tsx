@@ -23,11 +23,17 @@ export default async function DuaCategoryPage({ params }: DuaCategoryPageProps) 
   }
 
   const categoryTitles: Record<string, string> = {
-    "Kuanza Jambo": "Adhkar za Asubuhi",
-    Shukrani: "Adhkar za Jioni",
-    Elimu: "Dua za Qur'ani",
-    Faraja: "Dua za Sunnah",
+    "Kila Siku": "Dua za Kila Siku",
+    "Kuanza Jambo": "Dua za Kuanza Jambo",
+    Shukrani: "Dua za Shukrani",
+    Qurani: "Dua za Qur'ani",
+    Elimu: "Dua za Elimu",
+    Faraja: "Dua za Faraja",
     Afya: "Dua za Afya",
+    Safari: "Dua za Safari",
+    Chakula: "Dua za Chakula",
+    Imani: "Dua za Imani",
+    Familia: "Dua za Familia",
   }
 
   const displayTitle = categoryTitles[decodedCategory] || decodedCategory
@@ -41,7 +47,7 @@ export default async function DuaCategoryPage({ params }: DuaCategoryPageProps) 
             Rudi kwenye Makusanyo
           </Button>
         </Link>
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{displayTitle}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground">{displayTitle}</h1>
         <p className="text-muted-foreground mt-2">{categoryDuas.length} Dua</p>
       </div>
 

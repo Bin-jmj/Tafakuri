@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
-import { Clock, Sun, Save } from "lucide-react"
+import { Clock, Sun } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import type { RotationSettings } from "@/lib/utils/rotation"
 import { updateRotationSettings } from "./actions"
@@ -36,7 +36,7 @@ export function MudaSettingsForm({ settings }: { settings: RotationSettings }) {
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary">
               <Sun className="h-5 w-5" />
             </div>
             <div>
@@ -68,13 +68,30 @@ export function MudaSettingsForm({ settings }: { settings: RotationSettings }) {
               defaultValue={toInputTime(settings.adhkarJioniStart)}
             />
           </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label htmlFor="adhkar_rotate_seconds">Muda wa kila kadi (sekunde)</Label>
+            <div className="flex items-center gap-3">
+              <Input
+                id="adhkar_rotate_seconds"
+                name="adhkar_rotate_seconds"
+                type="number"
+                min={5}
+                max={3600}
+                required
+                disabled={isSaving}
+                defaultValue={settings.adhkarRotateSeconds}
+                className="w-28"
+              />
+              <p className="text-xs text-muted-foreground">Chini: sekunde 5 — Juu: sekunde 3600 (saa 1)</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary">
               <Clock className="h-5 w-5" />
             </div>
             <div>
@@ -139,6 +156,46 @@ export function MudaSettingsForm({ settings }: { settings: RotationSettings }) {
               required
               disabled={isSaving}
               defaultValue={toInputTime(settings.contentIshaStart)}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary">
+              <Sun className="h-5 w-5" />
+            </div>
+            <div>
+              <CardTitle className="text-base">Mwanga wa Jua — Badiliko la Rangi</CardTitle>
+              <CardDescription>
+                Programu itabadilika moja kwa moja: mwanga wa jua (light) baada ya alfajiri, giza (dark) baada ya jua kuzama
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="sunrise_time">Jua Linachomoza (Alfajiri)</Label>
+            <Input
+              id="sunrise_time"
+              name="sunrise_time"
+              type="time"
+              required
+              disabled={isSaving}
+              defaultValue={toInputTime(settings.sunriseTime)}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="sunset_time">Jua Linazama (Magharibi)</Label>
+            <Input
+              id="sunset_time"
+              name="sunset_time"
+              type="time"
+              required
+              disabled={isSaving}
+              defaultValue={toInputTime(settings.sunsetTime)}
             />
           </div>
         </CardContent>

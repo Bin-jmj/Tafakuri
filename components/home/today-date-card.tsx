@@ -19,7 +19,7 @@ export function TodayDateCard() {
       <CardContent className="flex flex-col gap-4 p-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary">
               <CalendarDays className="h-5 w-5" />
             </div>
             <div>
@@ -29,7 +29,7 @@ export function TodayDateCard() {
           </div>
           <div className="hidden sm:block w-px bg-border" />
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/10 text-accent">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-accent">
               <Moon className="h-5 w-5" />
             </div>
             <div>
@@ -42,7 +42,7 @@ export function TodayDateCard() {
         {nextPrayer && (
           <div className="flex items-center justify-between gap-3 border-t pt-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-primary">
                 <Clock className="h-5 w-5" />
               </div>
               <div>

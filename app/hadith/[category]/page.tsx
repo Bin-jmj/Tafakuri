@@ -31,7 +31,7 @@ export default async function HadithCategoryPage({ params }: HadithCategoryPageP
             Rudi kwenye Makusanyo
           </Button>
         </Link>
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{decodedCategory}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground">{decodedCategory}</h1>
         <p className="text-muted-foreground mt-2">{categoryHadiths.length} Hadithi</p>
       </div>
 

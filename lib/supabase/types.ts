@@ -187,11 +187,33 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["bookmarks"]["Row"]>
         Relationships: []
       }
+      categories: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          type: "hadith" | "dua" | "adhkar" | "article" | "media"
+          description: string | null
+          sort_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: Partial<Database["public"]["Tables"]["categories"]["Row"]> & {
+          name: string
+          slug: string
+          type: "hadith" | "dua" | "adhkar" | "article" | "media"
+        }
+        Update: Partial<Database["public"]["Tables"]["categories"]["Row"]>
+        Relationships: []
+      }
       rotation_settings: {
         Row: {
           id: number
           adhkar_asubuhi_start: string
           adhkar_jioni_start: string
+          adhkar_rotate_seconds: number
+          sunrise_time: string
+          sunset_time: string
           content_fajr_start: string
           content_dhuhr_start: string
           content_asr_start: string

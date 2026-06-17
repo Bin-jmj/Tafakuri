@@ -18,7 +18,7 @@ export function FeatureCard({ title, description, icon: Icon, href, gradient }: 
         <div className={`h-2 ${gradient}`} />
         <CardHeader>
           <div className="flex items-center gap-3 mb-2">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-primary">
               <Icon className="h-6 w-6" />
             </div>
           </div>

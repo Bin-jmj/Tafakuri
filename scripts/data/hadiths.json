@@ -1,0 +1,254 @@
+[
+  {
+    "arabicText": "بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ: شَهَادَةِ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلاَةِ، وَإِيتَاءِ الزَّكَاةِ، وَالْحَجِّ، وَصَوْمِ رَمَضَانَ",
+    "translationSw": "Uislamu umejengwa juu ya nguzo tano: Kushuhudia kwamba hakuna Mungu ila Allah na Muhammad ni Mtume wake, kusimamisha sala, kutoa zaka, kuhiji Nyumba, na kufunga Ramadhani",
+    "narrator": "Ibn Umar",
+    "source": "Sahih Bukhari 8, Sahih Muslim 16",
+    "category": "Imani"
+  },
+  {
+    "arabicText": "الإِيمَانُ أَنْ تُؤْمِنَ بِاللَّهِ وَمَلاَئِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ وَالْيَوْمِ الآخِرِ وَتُؤْمِنَ بِالْقَدَرِ خَيْرِهِ وَشَرِّهِ",
+    "translationSw": "Imani ni kuamini Allah, na malaika wake, na vitabu vyake, na mitume wake, na Siku ya Mwisho, na kuamini qadar yake — njema yake na mbaya yake",
+    "narrator": "Umar bin Al-Khattab",
+    "source": "Sahih Muslim 8",
+    "category": "Imani"
+  },
+  {
+    "arabicText": "لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
+    "translationSw": "Hakuna hata mmoja wenu atakayekuwa muumini wa kweli mpaka apende kwa ndugu yake kile anachotaka kwa nafsi yake",
+    "narrator": "Anas bin Malik",
+    "source": "Sahih Bukhari 13, Sahih Muslim 45",
+    "category": "Imani"
+  },
+  {
+    "arabicText": "ثَلاَثٌ مَنْ كُنَّ فِيهِ وَجَدَ حَلاَوَةَ الإِيمَانِ: أَنْ يَكُونَ اللَّهُ وَرَسُولُهُ أَحَبَّ إِلَيْهِ مِمَّا سِوَاهُمَا، وَأَنْ يُحِبَّ الْمَرْءَ لاَ يُحِبُّهُ إِلاَّ لِلَّهِ، وَأَنْ يَكْرَهَ أَنْ يَعُودَ فِي الْكُفْرِ كَمَا يَكْرَهُ أَنْ يُقْذَفَ فِي النَّارِ",
+    "translationSw": "Vitatu ambavyo mwenye kuwa navyo atapata utamu wa imani: kwamba Allah na Mtume wake wampendeze kuliko chochote kingine; kwamba ampende mtu tu kwa ajili ya Allah; na kwamba achukiae kurudi katika ukafiri kama anavyochukia kutupwa motoni",
+    "narrator": "Anas bin Malik",
+    "source": "Sahih Bukhari 16, Sahih Muslim 43",
+    "category": "Imani"
+  },
+  {
+    "arabicText": "الصَّلَوَاتُ الْخَمْسُ، وَالْجُمْعَةُ إِلَى الْجُمْعَةِ، وَرَمَضَانُ إِلَى رَمَضَانَ، مُكَفِّرَاتٌ مَا بَيْنَهُنَّ إِذَا اجْتَنَبَ الْكَبَائِرَ",
+    "translationSw": "Sala tano, na Ijumaa hadi Ijumaa, na Ramadhani hadi Ramadhani, ni kafara ya dhambi zilizofanywa kati yake, ikiwa mtu ameepuka madhambi makubwa",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Muslim 233",
+    "category": "Ibada"
+  },
+  {
+    "arabicText": "مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ",
+    "translationSw": "Yeyote anayefunga Ramadhani kwa imani na kutarajia thawabu, madhambi yake yaliyopita yatasamehewa",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Bukhari 38, Sahih Muslim 760",
+    "category": "Ibada"
+  },
+  {
+    "arabicText": "أَفْضَلُ الصَّلاَةِ بَعْدَ الْفَرِيضَةِ صَلاَةُ اللَّيْلِ",
+    "translationSw": "Sala bora zaidi baada ya sala za faradhi ni sala ya usiku",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Muslim 1163",
+    "category": "Ibada"
+  },
+  {
+    "arabicText": "مَنْ قَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ",
+    "translationSw": "Yeyote anayesimama kusali usiku wa Ramadhani kwa imani na kutarajia thawabu, madhambi yake yaliyopita yatasamehewa",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Bukhari 37",
+    "category": "Ibada"
+  },
+  {
+    "arabicText": "أَكْمَلُ الْمُؤْمِنِينَ إِيمَانًا أَحْسَنُهُمْ خُلُقًا، وَخِيَارُكُمْ خِيَارُكُمْ لِنِسَائِهِمْ خُلُقًا",
+    "translationSw": "Miongoni mwa waumini wale wenye imani kamili zaidi ni wenye tabia njema zaidi, na bora wenu ni wale wanaowatendea wenza wao wema",
+    "narrator": "Abu Hurairah",
+    "source": "Sunan Abu Dawud 4682, Tirmidhi 1162",
+    "category": "Akhlaq"
+  },
+  {
+    "arabicText": "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ",
+    "translationSw": "Muislamu ni yule ambaye Waislamu wengine wanasalimika kutoka kwa ulimi wake na mkono wake",
+    "narrator": "Abdullah bin Amr",
+    "source": "Sahih Bukhari 10, Sahih Muslim 40",
+    "category": "Akhlaq"
+  },
+  {
+    "arabicText": "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ",
+    "translationSw": "Kutabasamu kwako uso kwa uso na ndugu yako ni sadaka kwako",
+    "narrator": "Abu Dharr",
+    "source": "Sunan Tirmidhi 1956",
+    "category": "Akhlaq"
+  },
+  {
+    "arabicText": "اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ، وَأَتْبِعِ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا، وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ",
+    "translationSw": "Mche Allah popote ulipo; fuatisha tendo baya kwa tendo jema ili lifute; na watendeeni watu kwa tabia njema",
+    "narrator": "Abu Dharr",
+    "source": "Sunan Tirmidhi 1987",
+    "category": "Akhlaq"
+  },
+  {
+    "arabicText": "خَيْرُكُمْ خَيْرُكُمْ لِأَهْلِهِ، وَأَنَا خَيْرُكُمْ لِأَهْلِي",
+    "translationSw": "Bora wenu ni yule bora zaidi kwa familia yake, nami mimi ni bora zaidi wenu kwa familia yangu",
+    "narrator": "Aisha",
+    "source": "Sunan Tirmidhi 3895, Ibn Majah 1977",
+    "category": "Familia"
+  },
+  {
+    "arabicText": "الْجَنَّةُ تَحْتَ أَقْدَامِ الأُمَّهَاتِ",
+    "translationSw": "Pepo iko chini ya nyayo za mama",
+    "narrator": "Muawiyah bin Jahimah",
+    "source": "Sunan An-Nasa'i 3104, Ibn Majah 2781",
+    "category": "Familia"
+  },
+  {
+    "arabicText": "مَنْ أَرَادَ أَنْ يُبْسَطَ لَهُ فِي رِزْقِهِ وَيُنْسَأَ لَهُ فِي أَثَرِهِ فَلْيَصِلْ رَحِمَهُ",
+    "translationSw": "Yeyote anayetaka kupanuliwa riziki yake na kuongezwa umri wake aendelee na udugu wa familia yake",
+    "narrator": "Anas bin Malik",
+    "source": "Sahih Bukhari 2067, Sahih Muslim 2557",
+    "category": "Familia"
+  },
+  {
+    "arabicText": "كُلُّكُمْ رَاعٍ وَكُلُّكُمْ مَسْئُولٌ عَنْ رَعِيَّتِهِ",
+    "translationSw": "Kila mmoja wenu ni mchungaji na kila mmoja wenu atajibu kuhusu wale aliowachungia",
+    "narrator": "Abdullah bin Umar",
+    "source": "Sahih Bukhari 893, Sahih Muslim 1829",
+    "category": "Familia"
+  },
+  {
+    "arabicText": "طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ",
+    "translationSw": "Kutafuta elimu ni wajibu kwa kila Muislamu",
+    "narrator": "Anas bin Malik",
+    "source": "Sunan Ibn Majah 224",
+    "category": "Elimu"
+  },
+  {
+    "arabicText": "مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ",
+    "translationSw": "Yeyote anayepita njia akitafuta elimu, Allah atamrahisishia njia ya kwenda Peponi",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Muslim 2699",
+    "category": "Elimu"
+  },
+  {
+    "arabicText": "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
+    "translationSw": "Bora wenu ni yule anayejifunza Qurani na kuyafundisha wengine",
+    "narrator": "Uthman bin Affan",
+    "source": "Sahih Bukhari 5027",
+    "category": "Elimu"
+  },
+  {
+    "arabicText": "إِذَا مَاتَ الإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلاَّ مِنْ ثَلاَثَةٍ: إِلاَّ مِنْ صَدَقَةٍ جَارِيَةٍ، أَوْ عِلْمٍ يُنْتَفَعُ بِهِ، أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ",
+    "translationSw": "Mtu akifa, vitendo vyake vinakoma isipokuwa vitatu: Sadaka inayoendelea, elimu yenye manufaa, au mtoto mwema anayemwombea",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Muslim 1631",
+    "category": "Elimu"
+  },
+  {
+    "arabicText": "اتَّقُوا النَّارَ وَلَوْ بِشِقِّ تَمْرَةٍ",
+    "translationSw": "Jikingeni na Moto wa Jahannam hata kwa kutoa nusu ya tende",
+    "narrator": "Adiy bin Hatim",
+    "source": "Sahih Bukhari 1417, Sahih Muslim 1016",
+    "category": "Sadaka"
+  },
+  {
+    "arabicText": "الْيَدُ الْعُلْيَا خَيْرٌ مِنَ الْيَدِ السُّفْلَى، وَالْيَدُ الْعُلْيَا هِيَ الْمُنْفِقَةُ، وَالسُّفْلَى هِيَ السَّائِلَةُ",
+    "translationSw": "Mkono wa juu ni bora kuliko mkono wa chini. Mkono wa juu ni ule unaotoa, na mkono wa chini ni ule unaoomba",
+    "narrator": "Abdullah bin Umar",
+    "source": "Sahih Bukhari 1429, Sahih Muslim 1033",
+    "category": "Sadaka"
+  },
+  {
+    "arabicText": "كُلُّ مَعْرُوفٍ صَدَقَةٌ",
+    "translationSw": "Kila tendo jema ni sadaka",
+    "narrator": "Jabir bin Abdullah",
+    "source": "Sahih Bukhari 6021, Sahih Muslim 1005",
+    "category": "Sadaka"
+  },
+  {
+    "arabicText": "مَا نَقَصَتْ صَدَقَةٌ مِنْ مَالٍ",
+    "translationSw": "Sadaka haipungui mali kamwe",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Muslim 2588",
+    "category": "Sadaka"
+  },
+  {
+    "arabicText": "أَفْشُوا السَّلاَمَ بَيْنَكُمْ",
+    "translationSw": "Sambazeni salamu kati yenu",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Muslim 54",
+    "category": "Adabu"
+  },
+  {
+    "arabicText": "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
+    "translationSw": "Yeyote anayeamini Allah na Siku ya Mwisho aseme maneno mazuri au anyamaze",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Bukhari 6136, Sahih Muslim 47",
+    "category": "Adabu"
+  },
+  {
+    "arabicText": "لاَ تَغْضَبْ وَلَكَ الْجَنَّةُ",
+    "translationSw": "Usighadhabishe na Pepo itakuwa yako",
+    "narrator": "Abu Ad-Darda",
+    "source": "Sahih Bukhari 6116",
+    "category": "Adabu"
+  },
+  {
+    "arabicText": "إِيَّاكُمْ وَالظَّنَّ فَإِنَّ الظَّنَّ أَكْذَبُ الْحَدِيثِ",
+    "translationSw": "Jiepusheni na dhana mbaya, kwani dhana mbaya ni uongo mkubwa kabisa",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Bukhari 5143, Sahih Muslim 2563",
+    "category": "Adabu"
+  },
+  {
+    "arabicText": "الطَّهُورُ شَطْرُ الإِيمَانِ",
+    "translationSw": "Usafi ni nusu ya imani",
+    "narrator": "Abu Malik Al-Ash'ari",
+    "source": "Sahih Muslim 223",
+    "category": "Afya"
+  },
+  {
+    "arabicText": "الْمُؤْمِنُ الْقَوِيُّ خَيْرٌ وَأَحَبُّ إِلَى اللَّهِ مِنَ الْمُؤْمِنِ الضَّعِيفِ، وَفِي كُلٍّ خَيْرٌ",
+    "translationSw": "Muumini mwenye nguvu ni bora na mpendwa zaidi kwa Allah kuliko muumini dhaifu, nami katika kila mmoja kuna wema",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Muslim 2664",
+    "category": "Afya"
+  },
+  {
+    "arabicText": "مَا أَنْزَلَ اللَّهُ دَاءً إِلاَّ أَنْزَلَ لَهُ شِفَاءً",
+    "translationSw": "Allah hakushusha ugonjwa wowote ila akashushia dawa yake",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Bukhari 5678",
+    "category": "Afya"
+  },
+  {
+    "arabicText": "نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ: الصِّحَّةُ وَالْفَرَاغُ",
+    "translationSw": "Neema mbili ambazo watu wengi wamezipoteza: Afya njema na muda wa bure",
+    "narrator": "Abdullah bin Abbas",
+    "source": "Sahih Bukhari 6412",
+    "category": "Afya"
+  },
+  {
+    "arabicText": "عَجَبًا لأَمْرِ الْمُؤْمِنِ إِنَّ أَمْرَهُ كُلَّهُ خَيْرٌ، وَلَيْسَ ذَاكَ لأَحَدٍ إِلاَّ لِلْمُؤْمِنِ: إِنْ أَصَابَتْهُ سَرَّاءُ شَكَرَ فَكَانَ خَيْرًا لَهُ، وَإِنْ أَصَابَتْهُ ضَرَّاءُ صَبَرَ فَكَانَ خَيْرًا لَهُ",
+    "translationSw": "Jinsi ya ajabu ni hali ya muumini! Mambo yake yote ni mazuri, na hii haipo kwa mtu yeyote ila kwa muumini: Akipata furaha, anashukuru na inamsaidia; akipata msiba, anasaburi na inamsaidia",
+    "narrator": "Suhaib",
+    "source": "Sahih Muslim 2999",
+    "category": "Faraja"
+  },
+  {
+    "arabicText": "مَا يُصِيبُ الْمُسْلِمَ مِنْ نَصَبٍ وَلاَ وَصَبٍ وَلاَ هَمٍّ وَلاَ حُزْنٍ وَلاَ أَذًى وَلاَ غَمٍّ، حَتَّى الشَّوْكَةِ يُشَاكُهَا، إِلاَّ كَفَّرَ اللَّهُ بِهَا مِنْ خَطَايَاهُ",
+    "translationSw": "Hakuna msiba wowote unaompata Muislamu — uchovu, maradhi, wasiwasi, huzuni, maumivu, ghadhabu, hata mwiba unaomchoma — ila Allah atasamehe dhambi zake kwa hilo",
+    "narrator": "Abu Said Al-Khudri na Abu Hurairah",
+    "source": "Sahih Bukhari 5641, Sahih Muslim 2573",
+    "category": "Faraja"
+  },
+  {
+    "arabicText": "أَنَا عِنْدَ ظَنِّ عَبْدِي بِي، وَأَنَا مَعَهُ إِذَا ذَكَرَنِي",
+    "translationSw": "Mimi niko kulingana na dhana ya mja wangu kwangu, nami niko naye anaponizungumza",
+    "narrator": "Abu Hurairah",
+    "source": "Sahih Bukhari 7405, Sahih Muslim 2675",
+    "category": "Faraja"
+  },
+  {
+    "arabicText": "إِنَّ اللَّهَ قَالَ: إِذَا ابْتَلَيْتُ عَبْدِي بِحَبِيبَتَيْهِ فَصَبَرَ، عَوَّضْتُهُ مِنْهُمَا الْجَنَّةَ",
+    "translationSw": "Allah amesema: 'Nikimjaribu mja wangu kwa kumuondolea macho yake mawili naye akasaburi, nitampa badala yake Pepo'",
+    "narrator": "Anas bin Malik",
+    "source": "Sahih Bukhari 5653",
+    "category": "Faraja"
+  }
+]

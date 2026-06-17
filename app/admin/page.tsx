@@ -101,7 +101,7 @@ export default async function AdminDashboard() {
             {quickActions.map((action) => (
               <Link key={action.href} href={action.href}>
                 <Button variant="outline" className="w-full justify-start gap-3 h-10 text-sm font-normal hover:bg-primary/5 hover:border-primary/30">
-                  <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <div className="w-6 h-6 rounded bg-muted flex items-center justify-center flex-shrink-0">
                     <action.icon className="h-3.5 w-3.5 text-primary" />
                   </div>
                   {action.label}
@@ -112,7 +112,7 @@ export default async function AdminDashboard() {
             <Separator className="my-2" />
             <Link href="/admin/watumiaji">
               <Button variant="outline" className="w-full justify-start gap-3 h-10 text-sm font-normal hover:bg-primary/5 hover:border-primary/30">
-                <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-6 h-6 rounded bg-muted flex items-center justify-center flex-shrink-0">
                   <Users className="h-3.5 w-3.5 text-primary" />
                 </div>
                 Simamia Watumiaji
@@ -121,7 +121,7 @@ export default async function AdminDashboard() {
             </Link>
             <Link href="/admin/settings/drive">
               <Button variant="outline" className="w-full justify-start gap-3 h-10 text-sm font-normal hover:bg-primary/5 hover:border-primary/30">
-                <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-6 h-6 rounded bg-muted flex items-center justify-center flex-shrink-0">
                   <HardDrive className="h-3.5 w-3.5 text-primary" />
                 </div>
                 Mipangilio ya Drive

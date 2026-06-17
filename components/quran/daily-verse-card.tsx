@@ -82,8 +82,6 @@ export function DailyVerseCard({ verse, surahName }: DailyVerseCardProps) {
         arabicAlign: "right",
         translationLabel: "Tarjama",
         translation: verse.swahiliTranslation,
-        noteLabel: "Tafsiri",
-        note: verse.tafsir,
       })
       downloadCanvasAsImage(canvas, "aya")
       toast({ title: "Imepakuliwa", description: "Aya imepakuliwa kama picha" })

@@ -24,20 +24,19 @@ import { copyToClipboard, shareContent } from "@/lib/utils/share"
 import { DEFAULT_ROTATION_SETTINGS, getAdhkarSlot, type RotationSettings } from "@/lib/utils/rotation"
 import { downloadCanvasAsImage, drawShareImage } from "@/lib/utils/share-image"
 
-const ROTATE_MS = 2 * 60 * 1000 // 2 minutes
-
 interface AdhkarWidgetProps {
   rotationSettings?: RotationSettings
 }
 
 export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: AdhkarWidgetProps) {
+  const rotateMs = rotationSettings.adhkarRotateSeconds * 1000
   const { toast } = useToast()
   const { isBookmarked, toggleBookmark } = useBookmarks()
 
   const [slot, setSlot] = useState<"asubuhi" | "jioni">(() => getAdhkarSlot(rotationSettings))
   const [adhkarList, setAdhkarList] = useState<Adhkar[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [timeLeft, setTimeLeft] = useState(ROTATE_MS)
+  const [timeLeft, setTimeLeft] = useState(rotateMs)
   const [downloading, setDownloading] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const tickRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -56,7 +55,7 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
         if (!active) return
         setAdhkarList((data ?? []).map(mapAdhkar))
         setCurrentIndex(0)
-        setTimeLeft(ROTATE_MS)
+        setTimeLeft(rotateMs)
       })
     return () => {
       active = false
@@ -69,12 +68,12 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
     if (intervalRef.current) clearInterval(intervalRef.current)
     if (tickRef.current) clearInterval(tickRef.current)
 
-    setTimeLeft(ROTATE_MS)
+    setTimeLeft(rotateMs)
 
     intervalRef.current = setInterval(() => {
       setCurrentIndex((i) => (i + 1) % adhkarList.length)
-      setTimeLeft(ROTATE_MS)
-    }, ROTATE_MS)
+      setTimeLeft(rotateMs)
+    }, rotateMs)
 
     tickRef.current = setInterval(() => {
       setTimeLeft((t) => Math.max(0, t - 1000))
@@ -90,11 +89,11 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
 
   const handlePrev = () => {
     setCurrentIndex((i) => (i - 1 + adhkarList.length) % adhkarList.length)
-    setTimeLeft(ROTATE_MS)
+    setTimeLeft(rotateMs)
   }
   const handleNext = () => {
     setCurrentIndex((i) => (i + 1) % adhkarList.length)
-    setTimeLeft(ROTATE_MS)
+    setTimeLeft(rotateMs)
   }
 
   const bookmarked = adhkar ? isBookmarked("adhkar", adhkar.id) : false
@@ -150,7 +149,7 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
   }, [adhkar, slot, toast])
 
   // Progress: percentage of 10 min elapsed
-  const progressPct = Math.round(((ROTATE_MS - timeLeft) / ROTATE_MS) * 100)
+  const progressPct = Math.round(((rotateMs - timeLeft) / rotateMs) * 100)
   const minutesLeft = Math.floor(timeLeft / 60000)
   const secondsLeft = Math.floor((timeLeft % 60000) / 1000)
 
@@ -197,7 +196,7 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
         {/* 10-min rotation progress */}
         <div className="mt-3 space-y-1">
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Inabadilika kwa kila dakika 2</span>
+            <span>Inabadilika kila sekunde {rotationSettings.adhkarRotateSeconds}</span>
             <span>{minutesLeft}:{String(secondsLeft).padStart(2, "0")} iliyobaki</span>
           </div>
           <Progress value={progressPct} className="h-1.5" />
@@ -228,7 +227,7 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
               <span><span className="font-medium text-foreground">Chanzo:</span> {adhkar.reference}</span>
             </div>
 
-            <div className="bg-primary/5 border border-primary/15 rounded-lg p-3">
+            <div className="bg-muted border border-border rounded-lg p-3">
               <p className="text-sm text-muted-foreground leading-relaxed">
                 <span className="font-semibold text-primary">Faida: </span>
                 {adhkar.benefit}

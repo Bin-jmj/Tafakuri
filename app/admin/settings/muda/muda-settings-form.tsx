@@ -68,23 +68,37 @@ export function MudaSettingsForm({ settings }: { settings: RotationSettings }) {
               defaultValue={toInputTime(settings.adhkarJioniStart)}
             />
           </div>
-          <div className="space-y-1.5 sm:col-span-2">
-            <Label htmlFor="adhkar_rotate_seconds">Muda wa kila kadi (sekunde)</Label>
-            <div className="flex items-center gap-3">
-              <Input
-                id="adhkar_rotate_seconds"
-                name="adhkar_rotate_seconds"
-                type="number"
-                min={5}
-                max={3600}
-                required
-                disabled={isSaving}
-                defaultValue={settings.adhkarRotateSeconds}
-                className="w-28"
-              />
-              <p className="text-xs text-muted-foreground">Chini: sekunde 5 — Juu: sekunde 3600 (saa 1)</p>
-            </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="adhkar_asubuhi_rotate_seconds">Muda wa kadi — Asubuhi (sekunde)</Label>
+            <Input
+              id="adhkar_asubuhi_rotate_seconds"
+              name="adhkar_asubuhi_rotate_seconds"
+              type="number"
+              min={5}
+              max={3600}
+              required
+              disabled={isSaving}
+              defaultValue={settings.adhkarAsubuhiRotateSeconds}
+              className="w-28"
+            />
           </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="adhkar_jioni_rotate_seconds">Muda wa kadi — Jioni (sekunde)</Label>
+            <Input
+              id="adhkar_jioni_rotate_seconds"
+              name="adhkar_jioni_rotate_seconds"
+              type="number"
+              min={5}
+              max={3600}
+              required
+              disabled={isSaving}
+              defaultValue={settings.adhkarJioniRotateSeconds}
+              className="w-28"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground sm:col-span-2">
+            Asubuhi na Jioni mara nyingi zina idadi tofauti ya adhkar, kwa hivyo unaweza kuweka muda tofauti kwa kila moja. Chini: sekunde 5 — Juu: sekunde 3600 (saa 1)
+          </p>
         </CardContent>
       </Card>
 

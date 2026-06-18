@@ -8,6 +8,7 @@ export type CmsFieldType =
   | "number"
   | "boolean"
   | "select"
+  | "multi-select"
   | "date"
   | "image"
   | "drive-file"

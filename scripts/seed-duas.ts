@@ -43,7 +43,7 @@ async function seedDuas() {
     arabic_text: d.arabicText,
     translation_sw: d.translationSw,
     transliteration: d.transliteration ?? null,
-    category: d.category,
+    categories: [d.category],
     occasion: d.occasion ?? null,
     reference: d.reference ?? null,
   }))
@@ -66,6 +66,7 @@ async function seedAdhkar() {
     translation_sw: a.translationSw,
     transliteration: a.transliteration ?? null,
     slot: a.slot,
+    categories: [a.slot === "asubuhi" ? "Asubuhi" : "Jioni"],
     count: a.count,
     benefit: a.benefit ?? null,
     reference: a.reference ?? null,

@@ -15,7 +15,7 @@ export default async function DuaCategoryPage({ params }: DuaCategoryPageProps) 
   const decodedCategory = decodeURIComponent(category)
 
   const supabase = await createClient()
-  const { data: duaRows } = await supabase.from("duas").select("*").eq("category", decodedCategory)
+  const { data: duaRows } = await supabase.from("duas").select("*").contains("categories", [decodedCategory])
   const categoryDuas = (duaRows ?? []).map(mapDua)
 
   if (categoryDuas.length === 0) {

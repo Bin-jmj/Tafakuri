@@ -57,7 +57,7 @@ async function seedHadiths() {
     translation_sw: h.swahiliTranslation,
     narrator: h.narrator,
     source: h.source,
-    category: h.category,
+    categories: h.categories,
   }))
   const { error } = await supabase.from("hadiths").insert(rows)
   if (error) throw error
@@ -68,7 +68,7 @@ async function seedArticles() {
   const rows = mockArticles.map((a) => ({
     title: a.title,
     content: a.content,
-    category: a.category,
+    categories: a.categories,
     author: a.author,
     published_date: a.publishedDate.slice(0, 10),
     image_url: a.imageUrl ?? null,
@@ -83,7 +83,7 @@ async function seedDuas() {
     arabic_text: d.arabicText,
     translation_sw: d.swahiliTranslation,
     transliteration: d.transliteration ?? null,
-    category: d.category,
+    categories: d.categories,
     occasion: d.occasion ?? null,
     reference: d.reference ?? null,
   }))
@@ -101,6 +101,7 @@ async function seedAdhkar() {
     benefit: a.benefit ?? null,
     reference: a.reference ?? null,
     slot: a.slot,
+    categories: a.categories,
     sort_order: a.order,
   }))
   const { error } = await supabase.from("adhkar").insert(rows)
@@ -114,7 +115,7 @@ async function seedBooks() {
     title: b.title,
     author: b.author,
     description: b.description,
-    category: b.category,
+    categories: b.categories,
     language: b.language,
     cover_url: b.coverUrl ?? null,
     total_pages: b.totalPages ?? null,

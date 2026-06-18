@@ -11,14 +11,17 @@ export async function updateRotationSettings(formData: FormData): Promise<{ erro
   const get = (key: string) => String(formData.get(key) ?? "")
 
   const supabase = createServiceClient()
-  const rotateSeconds = Math.max(5, Math.min(3600, Number(get("adhkar_rotate_seconds")) || 30))
+  const clampSeconds = (v: string) => Math.max(5, Math.min(3600, Number(v) || 30))
+  const asubuhiRotateSeconds = clampSeconds(get("adhkar_asubuhi_rotate_seconds"))
+  const jioniRotateSeconds = clampSeconds(get("adhkar_jioni_rotate_seconds"))
 
   const { error } = await supabase
     .from("rotation_settings")
     .update({
       adhkar_asubuhi_start: get("adhkar_asubuhi_start"),
       adhkar_jioni_start: get("adhkar_jioni_start"),
-      adhkar_rotate_seconds: rotateSeconds,
+      adhkar_asubuhi_rotate_seconds: asubuhiRotateSeconds,
+      adhkar_jioni_rotate_seconds: jioniRotateSeconds,
       sunrise_time: get("sunrise_time"),
       sunset_time: get("sunset_time"),
       content_fajr_start: get("content_fajr_start"),

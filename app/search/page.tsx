@@ -5,6 +5,7 @@ import { DuaCard } from "@/components/dua/dua-card"
 import { ArticleCard } from "@/components/articles/article-card"
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { CategoryBadges } from "@/components/ui/category-badges"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -25,7 +26,7 @@ export default async function SearchPage({ searchParams }: Props) {
   let hadiths: ReturnType<typeof mapHadith>[] = []
   let duas: ReturnType<typeof mapDua>[] = []
   let articles: ReturnType<typeof mapArticle>[] = []
-  let media: { id: string; type: "book" | "audio" | "video"; title: string; author: string | null; category: string; cover_url: string | null }[] = []
+  let media: { id: string; type: "book" | "audio" | "video"; title: string; author: string | null; categories: string[]; cover_url: string | null }[] = []
   const surahNames = new Map<string, string>()
 
   if (query) {
@@ -177,7 +178,7 @@ function HadithResultCard({ hadith }: { hadith: ReturnType<typeof mapHadith> }) 
   return (
     <Card>
       <CardContent className="p-4 space-y-2">
-        <Badge variant="secondary">{hadith.category}</Badge>
+        <CategoryBadges categories={hadith.categories} />
         <p className="text-sm text-muted-foreground line-clamp-3">{hadith.swahiliTranslation}</p>
         <p className="text-xs text-muted-foreground">
           {hadith.narrator} - {hadith.source}
@@ -187,7 +188,7 @@ function HadithResultCard({ hadith }: { hadith: ReturnType<typeof mapHadith> }) 
   )
 }
 
-function MediaResultCard({ item }: { item: { id: string; type: "book" | "audio" | "video"; title: string; author: string | null; category: string } }) {
+function MediaResultCard({ item }: { item: { id: string; type: "book" | "audio" | "video"; title: string; author: string | null; categories: string[] } }) {
   const Icon = mediaTypeIcon[item.type]
   const content = (
     <Card className="hover:border-primary/30 transition-colors">

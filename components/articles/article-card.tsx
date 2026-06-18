@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { CategoryBadges } from "@/components/ui/category-badges"
 import { Button } from "@/components/ui/button"
 import { Bookmark, BookmarkCheck, Calendar, User, Share2, Copy, Newspaper } from "lucide-react"
 import { useBookmarks } from "@/hooks/use-bookmarks"
@@ -48,7 +48,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.preventDefault()
-    const text = `${article.title}\n\n${article.content}\n\nMwandishi: ${article.author}\nKategoria: ${article.category}`
+    const text = `${article.title}\n\n${article.content}\n\nMwandishi: ${article.author}\nKategoria: ${article.categories.join(", ")}`
     const copied = await copyToClipboard(text)
     if (copied) {
       toast({
@@ -83,7 +83,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
       </Link>
       <CardHeader className="flex-1">
         <div className="flex items-start justify-between gap-2 mb-2">
-          <Badge variant="secondary">{article.category}</Badge>
+          <CategoryBadges categories={article.categories} />
           <Button
             variant="ghost"
             size="icon"

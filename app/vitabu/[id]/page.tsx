@@ -4,6 +4,7 @@ import { mapBook } from "@/lib/mappers"
 import { BookActions } from "@/components/vitabu/book-actions"
 import { PdfReader } from "@/components/vitabu/pdf-reader"
 import { Badge } from "@/components/ui/badge"
+import { CategoryBadges } from "@/components/ui/category-badges"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -51,7 +52,7 @@ export default async function BookReaderPage({ params }: Props) {
             <div className="flex-1 p-5 space-y-3">
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div>
-                  <Badge variant="secondary" className="mb-2">{book.category}</Badge>
+                  <CategoryBadges categories={book.categories} className="mb-2" />
                   <h1 className="text-xl md:text-2xl font-bold leading-tight">{book.title}</h1>
                 </div>
               </div>

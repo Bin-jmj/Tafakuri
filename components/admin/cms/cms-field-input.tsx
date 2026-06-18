@@ -100,6 +100,39 @@ function FieldControl({ field, value, values, dynamicOptions, onChange }: { fiel
         </Select>
       )
     }
+    case "multi-select": {
+      const opts = (field.optionsKey && dynamicOptions?.[field.optionsKey])
+        ? dynamicOptions[field.optionsKey]
+        : (field.options ?? [])
+      const selected = Array.isArray(value) ? (value as string[]) : []
+      function toggle(v: string) {
+        const next = selected.includes(v) ? selected.filter((x) => x !== v) : [...selected, v]
+        onChange({ [field.name]: next })
+      }
+      return (
+        <div className="flex flex-wrap gap-2">
+          {opts.length === 0 && <p className="text-xs text-muted-foreground">Hakuna chaguo</p>}
+          {opts.map((opt) => {
+            const active = selected.includes(opt.value)
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => toggle(opt.value)}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
+                  active
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted text-muted-foreground border-border hover:border-primary/40",
+                )}
+              >
+                {opt.label}
+              </button>
+            )
+          })}
+        </div>
+      )
+    }
     case "boolean":
       return (
         <button

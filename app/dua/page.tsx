@@ -25,8 +25,10 @@ export default async function DuaPage() {
 
   const duasByCategory = duas.reduce(
     (acc, dua) => {
-      if (!acc[dua.category]) acc[dua.category] = []
-      acc[dua.category].push(dua)
+      for (const category of dua.categories) {
+        if (!acc[category]) acc[category] = []
+        acc[category].push(dua)
+      }
       return acc
     },
     {} as Record<string, typeof duas>,

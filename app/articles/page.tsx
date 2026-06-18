@@ -17,11 +17,15 @@ export default async function ArticlesPage() {
         description="Soma makala mbalimbali kuhusu Uislamu na maisha ya kila siku"
       />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {articles.map((article) => (
-          <ArticleCard key={article.id} article={article} />
-        ))}
-      </div>
+      {articles.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {articles.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-muted-foreground py-8">Hakuna makala zilizopatikana kwa sasa.</p>
+      )}
     </div>
   )
 }

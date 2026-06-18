@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Bookmark, BookmarkCheck, Copy, Image as ImageIcon, Share2, Sun, Moon, ChevronLeft, ChevronRight } from "lucide-react"
+import { Bookmark, BookmarkCheck, Copy, Image as ImageIcon, Share2, Sun, Moon, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
+import Link from "next/link"
 import {
   Dialog,
   DialogClose,
@@ -21,7 +22,7 @@ import { createClient } from "@/lib/supabase/client"
 import { mapAdhkar } from "@/lib/mappers"
 import type { Adhkar } from "@/lib/types"
 import { copyToClipboard, shareContent } from "@/lib/utils/share"
-import { DEFAULT_ROTATION_SETTINGS, getAdhkarSlot, type RotationSettings } from "@/lib/utils/rotation"
+import { DEFAULT_ROTATION_SETTINGS, getAdhkarRotateSeconds, getAdhkarSlot, type RotationSettings } from "@/lib/utils/rotation"
 import { downloadCanvasAsImage, drawShareImage } from "@/lib/utils/share-image"
 
 interface AdhkarWidgetProps {
@@ -29,11 +30,11 @@ interface AdhkarWidgetProps {
 }
 
 export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: AdhkarWidgetProps) {
-  const rotateMs = rotationSettings.adhkarRotateSeconds * 1000
   const { toast } = useToast()
   const { isBookmarked, toggleBookmark } = useBookmarks()
 
   const [slot, setSlot] = useState<"asubuhi" | "jioni">(() => getAdhkarSlot(rotationSettings))
+  const rotateMs = getAdhkarRotateSeconds(rotationSettings, slot) * 1000
   const [adhkarList, setAdhkarList] = useState<Adhkar[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [timeLeft, setTimeLeft] = useState(rotateMs)
@@ -192,11 +193,17 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
             <Moon className="h-3 w-3 mr-1" />
             Jioni
           </Button>
+          <Link href={`/adhkar/${slot === "asubuhi" ? "Asubuhi" : "Jioni"}`} className="ml-auto">
+            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground">
+              Tazama Zote
+              <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
         </div>
         {/* 10-min rotation progress */}
         <div className="mt-3 space-y-1">
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Inabadilika kila sekunde {rotationSettings.adhkarRotateSeconds}</span>
+            <span>Inabadilika kila sekunde {rotateMs / 1000}</span>
             <span>{minutesLeft}:{String(secondsLeft).padStart(2, "0")} iliyobaki</span>
           </div>
           <Progress value={progressPct} className="h-1.5" />

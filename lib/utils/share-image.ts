@@ -71,14 +71,14 @@ export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
 
   const arabicFont = "bold 32px serif"
   const arabicLines = wrapText(ctx, opts.arabicText, WIDTH - 100, arabicFont).slice(0, 4)
-  const trLines = wrapText(ctx, opts.translation, WIDTH - 120, "20px sans-serif").slice(0, 4)
+  const trLines = wrapText(ctx, opts.translation, WIDTH - 120, "24px sans-serif").slice(0, 4)
   const noteLines = opts.note ? wrapText(ctx, opts.note, WIDTH - 160, "15px sans-serif").slice(0, 12) : []
 
   let contentHeight = 160
   contentHeight += arabicLines.length * 46
   contentHeight += 40 // divider
   if (opts.translationLabel) contentHeight += 26
-  contentHeight += trLines.length * 32
+  contentHeight += trLines.length * 38
   if (noteLines.length) {
     contentHeight += 14 // gap before note box
     contentHeight += 30 + noteLines.length * 22
@@ -170,11 +170,11 @@ export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
     ctx.fillText(`${opts.translationLabel}:`, WIDTH / 2, y)
     y += 26
   }
-  ctx.font = "20px sans-serif"
+  ctx.font = "24px sans-serif"
   ctx.fillStyle = "rgba(255,255,255,0.92)"
   for (const line of trLines) {
     ctx.fillText(line, WIDTH / 2, y)
-    y += 32
+    y += 38
   }
 
   // Optional note (benefit / tafsir)
@@ -209,9 +209,9 @@ export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
     ctx.fillStyle = "rgba(255,255,255,0.6)"
     ctx.fillText(opts.source, WIDTH / 2, height - 50)
   }
-  ctx.font = "bold 14px sans-serif"
-  ctx.fillStyle = "rgba(255,255,255,0.4)"
-  ctx.fillText("Tafakuri", WIDTH / 2, height - 25)
+  ctx.font = "bold 17px sans-serif"
+  ctx.fillStyle = "rgba(255,255,255,0.45)"
+  ctx.fillText("tafakuri.co.tz", WIDTH / 2, height - 25)
 
   return canvas
 }

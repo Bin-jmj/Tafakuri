@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { CategoryBadges } from "@/components/ui/category-badges"
 import { Button } from "@/components/ui/button"
 import { Bookmark, BookmarkCheck, Share2, Copy, Image as ImageIcon } from "lucide-react"
 import {
@@ -69,7 +69,7 @@ export function DailyHadithCard({ hadith }: DailyHadithCardProps) {
     try {
       const canvas = drawShareImage({
         title: "Hadith ya Leo",
-        meta: hadith.category,
+        meta: hadith.categories.join(", "),
         arabicText: hadith.arabicText,
         translation: hadith.swahiliTranslation,
         source: `${hadith.narrator} — ${hadith.source}`,
@@ -98,7 +98,7 @@ export function DailyHadithCard({ hadith }: DailyHadithCardProps) {
               })}
             </CardDescription>
           </div>
-          <Badge variant="secondary">{hadith.category}</Badge>
+          <CategoryBadges categories={hadith.categories} />
         </div>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col p-6">

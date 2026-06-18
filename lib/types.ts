@@ -35,7 +35,7 @@ export interface Hadith {
   swahiliTranslation: string
   narrator: string
   source: string
-  category: string
+  categories: string[]
   date: string
 }
 
@@ -43,7 +43,7 @@ export interface Article {
   id: string
   title: string
   content: string
-  category: string
+  categories: string[]
   author: string
   publishedDate: string
   imageUrl?: string
@@ -54,7 +54,7 @@ export interface Dua {
   arabicText: string
   swahiliTranslation: string
   transliteration?: string
-  category: string
+  categories: string[]
   occasion: string
   reference?: string
 }
@@ -67,7 +67,8 @@ export interface Adhkar {
   count: number          // recommended repetition count
   benefit: string        // faida/thawabu
   reference: string
-  slot: "asubuhi" | "jioni"  // morning or evening
+  slot: "asubuhi" | "jioni"  // morning or evening — drives the home page rotation only
+  categories: string[]   // broader topical tags — drives the /adhkar page
   order: number          // position within slot
 }
 
@@ -76,7 +77,7 @@ export interface Book {
   title: string
   author: string
   description: string
-  category: string
+  categories: string[]
   language: string
   coverUrl?: string
   fileUrl?: string       // PDF / epub path

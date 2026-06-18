@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { CategoryBadges } from "@/components/ui/category-badges"
 import { Button } from "@/components/ui/button"
 import { Bookmark, BookmarkCheck, Share2, Copy } from "lucide-react"
 import { useBookmarks } from "@/hooks/use-bookmarks"
@@ -52,7 +52,7 @@ export function HadithCard({ hadith }: HadithCardProps) {
     <Card className="overflow-hidden border border-primary/10 shadow-sm hover:shadow-md transition-shadow">
       <CardContent className="p-6">
         <div className="flex items-start justify-between gap-2 mb-4">
-          <Badge variant="secondary">{hadith.category}</Badge>
+          <CategoryBadges categories={hadith.categories} />
           <Button
             variant="ghost"
             size="icon"

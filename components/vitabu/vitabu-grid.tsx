@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { CategoryBadges } from "@/components/ui/category-badges"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -31,7 +31,7 @@ export function VitabuGrid({ books }: VitabuGridProps) {
       const matchSearch =
         b.title.toLowerCase().includes(search.toLowerCase()) ||
         b.author.toLowerCase().includes(search.toLowerCase())
-      const matchCat = category === "Zote" || b.category === category
+      const matchCat = category === "Zote" || b.categories.includes(category)
       return matchSearch && matchCat
     })
   }, [books, search, category])
@@ -97,7 +97,7 @@ export function VitabuGrid({ books }: VitabuGridProps) {
                   </div>
                 )}
                 <div className="absolute top-2 right-2">
-                  <Badge variant="secondary" className="text-xs">{book.category}</Badge>
+                  <CategoryBadges categories={book.categories} />
                 </div>
               </div>
 

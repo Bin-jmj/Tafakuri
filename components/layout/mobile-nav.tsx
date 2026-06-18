@@ -8,15 +8,17 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { BookOpen, Clock, FileText, Home, Library, Menu, Moon, Scroll, Search, Sun, User, HandHeart } from "lucide-react"
+import { BookOpen, Clock, FileText, Home, Library, LogIn, Menu, Moon, Scroll, Search, Sparkles, Sun, User, HandHeart } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNextPrayer } from "@/hooks/use-next-prayer"
+import { useUser } from "@/hooks/use-user"
 
 const navItems = [
   { href: "/", label: "Nyumbani", icon: Home },
   { href: "/quran", label: "Qur'ani", icon: BookOpen },
   { href: "/hadith", label: "Hadith", icon: Scroll },
   { href: "/dua", label: "Dua", icon: HandHeart },
+  { href: "/adhkar", label: "Adhkar", icon: Sparkles },
   { href: "/vitabu", label: "Vitabu", icon: Library },
   { href: "/articles", label: "Makala", icon: FileText },
   { href: "/search", label: "Tafuta", icon: Search },
@@ -28,8 +30,10 @@ export function MobileNav() {
   const pathname = usePathname()
   const nextPrayer = useNextPrayer()
   const { resolvedTheme, setTheme } = useTheme()
+  const { user, loading: userLoading } = useUser()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
+  const showLogin = mounted && !userLoading && !user
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -39,7 +43,7 @@ export function MobileNav() {
           <span className="sr-only">Fungua menyu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-64">
+      <SheetContent side="left" className="w-64 overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="text-left">
             <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2">
@@ -73,17 +77,20 @@ export function MobileNav() {
 
         <nav className="flex flex-col gap-2 mt-6">
           {navItems.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))
+            const isLoginSlot = item.href === "/profile" && showLogin
+            const Icon = isLoginSlot ? LogIn : item.icon
+            const label = isLoginSlot ? "Ingia" : item.label
+            const href = isLoginSlot ? "/auth/login" : item.href
+            const isActive = !isLoginSlot && (pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href)))
 
             return (
-              <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+              <Link key={item.href} href={href} onClick={() => setOpen(false)}>
                 <Button
                   variant="ghost"
                   className={cn("w-full justify-start gap-3", isActive && "bg-muted text-primary font-medium")}
                 >
                   <Icon className="h-5 w-5" />
-                  {item.label}
+                  {label}
                 </Button>
               </Link>
             )

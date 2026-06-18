@@ -65,7 +65,7 @@ export interface Database {
           translation_sw: string
           narrator: string
           source: string
-          category: string
+          categories: string[]
           created_at: string
           updated_at: string
         }
@@ -74,7 +74,7 @@ export interface Database {
           translation_sw: string
           narrator: string
           source: string
-          category: string
+          categories: string[]
         }
         Update: Partial<Database["public"]["Tables"]["hadiths"]["Row"]>
         Relationships: []
@@ -85,7 +85,7 @@ export interface Database {
           arabic_text: string
           translation_sw: string
           transliteration: string | null
-          category: string
+          categories: string[]
           occasion: string | null
           reference: string | null
           created_at: string
@@ -94,7 +94,7 @@ export interface Database {
         Insert: Partial<Database["public"]["Tables"]["duas"]["Row"]> & {
           arabic_text: string
           translation_sw: string
-          category: string
+          categories: string[]
         }
         Update: Partial<Database["public"]["Tables"]["duas"]["Row"]>
         Relationships: []
@@ -109,6 +109,7 @@ export interface Database {
           benefit: string | null
           reference: string | null
           slot: "asubuhi" | "jioni"
+          categories: string[]
           sort_order: number
           created_at: string
           updated_at: string
@@ -117,6 +118,7 @@ export interface Database {
           arabic_text: string
           translation_sw: string
           slot: "asubuhi" | "jioni"
+          categories: string[]
         }
         Update: Partial<Database["public"]["Tables"]["adhkar"]["Row"]>
         Relationships: []
@@ -126,7 +128,7 @@ export interface Database {
           id: string
           title: string
           content: string
-          category: string
+          categories: string[]
           author: string
           published_date: string
           image_url: string | null
@@ -136,7 +138,7 @@ export interface Database {
         Insert: Partial<Database["public"]["Tables"]["articles"]["Row"]> & {
           title: string
           content: string
-          category: string
+          categories: string[]
           author: string
         }
         Update: Partial<Database["public"]["Tables"]["articles"]["Row"]>
@@ -149,7 +151,7 @@ export interface Database {
           title: string
           author: string | null
           description: string | null
-          category: string
+          categories: string[]
           language: string
           cover_url: string | null
           drive_file_id: string | null
@@ -166,7 +168,7 @@ export interface Database {
         Insert: Partial<Database["public"]["Tables"]["media_items"]["Row"]> & {
           type: "book" | "audio" | "video"
           title: string
-          category: string
+          categories: string[]
         }
         Update: Partial<Database["public"]["Tables"]["media_items"]["Row"]>
         Relationships: []
@@ -211,7 +213,8 @@ export interface Database {
           id: number
           adhkar_asubuhi_start: string
           adhkar_jioni_start: string
-          adhkar_rotate_seconds: number
+          adhkar_asubuhi_rotate_seconds: number
+          adhkar_jioni_rotate_seconds: number
           sunrise_time: string
           sunset_time: string
           content_fajr_start: string

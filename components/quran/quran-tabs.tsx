@@ -27,18 +27,16 @@ export function QuranTabs({ surahs }: QuranTabsProps) {
           </TabsTrigger>
         </TabsList>
 
-        {activeTab === "surah" && (
-          <Select value={sortOrder} onValueChange={(value: "ascending" | "descending") => setSortOrder(value)}>
-            <SelectTrigger className="w-full sm:w-[200px] h-11">
-              <span className="text-xs text-muted-foreground mr-1">PANGA:</span>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ascending">KUPANDA</SelectItem>
-              <SelectItem value="descending">KUSHUKA</SelectItem>
-            </SelectContent>
-          </Select>
-        )}
+        <Select value={sortOrder} onValueChange={(value: "ascending" | "descending") => setSortOrder(value)}>
+          <SelectTrigger className="w-full sm:w-[200px] h-11">
+            <span className="text-xs text-muted-foreground mr-1">PANGA:</span>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ascending">KUPANDA</SelectItem>
+            <SelectItem value="descending">KUSHUKA</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <TabsContent value="surah" className="mt-0">
@@ -46,7 +44,7 @@ export function QuranTabs({ surahs }: QuranTabsProps) {
       </TabsContent>
 
       <TabsContent value="juz" className="mt-0">
-        <JuzList surahs={surahs} />
+        <JuzList surahs={surahs} sortOrder={sortOrder} />
       </TabsContent>
     </Tabs>
   )

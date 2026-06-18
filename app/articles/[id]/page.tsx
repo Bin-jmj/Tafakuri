@@ -27,7 +27,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       .from("media_items")
       .select("*")
       .eq("type", "book")
-      .eq("category", article.category)
+      .overlaps("categories", article.categories)
       .order("created_at", { ascending: false })
       .limit(2),
   ])

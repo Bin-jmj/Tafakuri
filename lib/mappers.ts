@@ -36,7 +36,7 @@ export function mapHadith(row: Tables["hadiths"]["Row"]): Hadith {
     swahiliTranslation: row.translation_sw,
     narrator: row.narrator,
     source: row.source,
-    category: row.category,
+    categories: row.categories,
     date: row.created_at,
   }
 }
@@ -47,7 +47,7 @@ export function mapDua(row: Tables["duas"]["Row"]): Dua {
     arabicText: row.arabic_text,
     swahiliTranslation: row.translation_sw,
     transliteration: row.transliteration ?? undefined,
-    category: row.category,
+    categories: row.categories,
     occasion: row.occasion ?? "",
     reference: row.reference ?? undefined,
   }
@@ -63,6 +63,7 @@ export function mapAdhkar(row: Tables["adhkar"]["Row"]): Adhkar {
     benefit: row.benefit ?? "",
     reference: row.reference ?? "",
     slot: row.slot as Adhkar["slot"],
+    categories: row.categories,
     order: row.sort_order,
   }
 }
@@ -72,7 +73,7 @@ export function mapArticle(row: Tables["articles"]["Row"]): Article {
     id: row.id,
     title: row.title,
     content: row.content,
-    category: row.category,
+    categories: row.categories,
     author: row.author,
     publishedDate: row.published_date,
     imageUrl: row.image_url ?? undefined,
@@ -83,7 +84,8 @@ export function mapRotationSettings(row: Tables["rotation_settings"]["Row"]): Ro
   return {
     adhkarAsubuhiStart: row.adhkar_asubuhi_start,
     adhkarJioniStart: row.adhkar_jioni_start,
-    adhkarRotateSeconds: row.adhkar_rotate_seconds ?? 30,
+    adhkarAsubuhiRotateSeconds: row.adhkar_asubuhi_rotate_seconds ?? 30,
+    adhkarJioniRotateSeconds: row.adhkar_jioni_rotate_seconds ?? 30,
     sunriseTime: row.sunrise_time?.slice(0, 5) ?? "06:00",
     sunsetTime: row.sunset_time?.slice(0, 5) ?? "18:00",
     contentFajrStart: row.content_fajr_start,
@@ -100,7 +102,7 @@ export function mapBook(row: Tables["media_items"]["Row"]): Book {
     title: row.title,
     author: row.author ?? "",
     description: row.description ?? "",
-    category: row.category,
+    categories: row.categories,
     language: row.language,
     coverUrl: row.cover_url ?? undefined,
     fileUrl: row.drive_file_id ? `/api/drive/file/${row.drive_file_id}` : undefined,

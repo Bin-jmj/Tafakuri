@@ -33,8 +33,10 @@ export default async function HadithPage() {
 
   const hadithsByCategory = hadiths.reduce(
     (acc, hadith) => {
-      if (!acc[hadith.category]) acc[hadith.category] = []
-      acc[hadith.category].push(hadith)
+      for (const category of hadith.categories) {
+        if (!acc[category]) acc[category] = []
+        acc[category].push(hadith)
+      }
       return acc
     },
     {} as Record<string, typeof hadiths>,

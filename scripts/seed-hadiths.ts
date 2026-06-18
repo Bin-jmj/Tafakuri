@@ -32,7 +32,7 @@ async function main() {
     translation_sw: h.translationSw,
     narrator: h.narrator,
     source: h.source,
-    category: h.category,
+    categories: [h.category],
   }))
 
   console.log(`Seeding ${rows.length} hadiths...`)

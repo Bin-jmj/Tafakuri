@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { CategoryBadges } from "@/components/ui/category-badges"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BookOpen, FileText, HandHeart, Library, Scroll, Sparkles, Trash2 } from "lucide-react"
@@ -96,8 +97,16 @@ export function BookmarksList() {
     return (
       <Card>
         <CardHeader>
-          <CardDescription>Tafadhali ingia kwenye akaunti yako kuona alama zako.</CardDescription>
+          <CardDescription>Tafadhali ingia kwenye akaunti yako kuona alama zako. Kama huna akaunti, jisajili — ni bure.</CardDescription>
         </CardHeader>
+        <CardContent className="flex gap-3">
+          <Link href="/auth/login">
+            <Button>Ingia</Button>
+          </Link>
+          <Link href="/auth/sign-up">
+            <Button variant="outline">Jisajili</Button>
+          </Link>
+        </CardContent>
       </Card>
     )
   }
@@ -177,7 +186,7 @@ export function BookmarksList() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 space-y-2">
-                    <Badge variant="secondary">{hadith.category}</Badge>
+                    <CategoryBadges categories={hadith.categories} />
                     <p className="text-sm text-muted-foreground line-clamp-2">{hadith.swahiliTranslation}</p>
                     <p className="text-xs text-muted-foreground">
                       {hadith.narrator} - {hadith.source}
@@ -206,7 +215,7 @@ export function BookmarksList() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 space-y-2">
-                    <Badge variant="secondary">{dua.category}</Badge>
+                    <CategoryBadges categories={dua.categories} />
                     <p className="text-sm text-muted-foreground line-clamp-2">{dua.swahiliTranslation}</p>
                     <p className="text-xs text-muted-foreground">{dua.occasion}</p>
                   </div>
@@ -233,7 +242,7 @@ export function BookmarksList() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 space-y-2">
-                    <Badge variant="secondary">{adhkar.slot === "asubuhi" ? "Asubuhi" : "Jioni"}</Badge>
+                    <CategoryBadges categories={adhkar.categories} />
                     <p className="text-sm text-muted-foreground line-clamp-2">{adhkar.swahiliTranslation}</p>
                     <p className="text-xs text-muted-foreground">{adhkar.reference}</p>
                   </div>
@@ -260,7 +269,7 @@ export function BookmarksList() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 space-y-2">
-                    <Badge variant="secondary">{article.category}</Badge>
+                    <CategoryBadges categories={article.categories} />
                     <h3 className="font-medium">{article.title}</h3>
                     <p className="text-sm text-muted-foreground line-clamp-2">{article.content}</p>
                     <Link href={`/articles/${article.id}`}>
@@ -292,7 +301,7 @@ export function BookmarksList() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 space-y-2">
-                    <Badge variant="secondary">{book.category}</Badge>
+                    <CategoryBadges categories={book.categories} />
                     <h3 className="font-medium">{book.title}</h3>
                     <p className="text-sm text-muted-foreground line-clamp-2">{book.description}</p>
                     <Link href={`/vitabu/${book.id}`}>

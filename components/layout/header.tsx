@@ -7,15 +7,17 @@ import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { MobileNav } from "./mobile-nav"
-import { BookOpen, Clock, FileText, Home, Library, Moon, Scroll, Search, Sun, User, HandHeart, Settings2 } from "lucide-react"
+import { BookOpen, Clock, FileText, Home, Library, LogIn, Moon, Scroll, Search, Sparkles, Sun, User, HandHeart, Settings2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNextPrayer } from "@/hooks/use-next-prayer"
+import { useUser } from "@/hooks/use-user"
 
 const navItems = [
   { href: "/", label: "Nyumbani", icon: Home },
   { href: "/quran", label: "Qur'ani", icon: BookOpen },
   { href: "/hadith", label: "Hadith", icon: Scroll },
   { href: "/dua", label: "Dua", icon: HandHeart },
+  { href: "/adhkar", label: "Adhkar", icon: Sparkles },
   { href: "/vitabu", label: "Vitabu", icon: Library },
   { href: "/articles", label: "Makala", icon: FileText },
   { href: "/profile", label: "Alama", icon: User },
@@ -25,8 +27,10 @@ export function Header() {
   const pathname = usePathname()
   const nextPrayer = useNextPrayer()
   const { resolvedTheme, setTheme } = useTheme()
+  const { user, loading: userLoading } = useUser()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
+  const showLogin = mounted && !userLoading && !user
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -53,17 +57,20 @@ export function Header() {
 
         <nav className="hidden lg:flex items-center gap-1 ml-auto">
           {navItems.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))
+            const isLoginSlot = item.href === "/profile" && showLogin
+            const Icon = isLoginSlot ? LogIn : item.icon
+            const label = isLoginSlot ? "Ingia" : item.label
+            const href = isLoginSlot ? "/auth/login" : item.href
+            const isActive = !isLoginSlot && (pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href)))
 
             return (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={href}>
                 <Button
                   variant="ghost"
                   className={cn("gap-2", isActive && "bg-muted text-primary font-medium")}
                 >
                   <Icon className="h-4 w-4" />
-                  {item.label}
+                  {label}
                 </Button>
               </Link>
             )

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { CategoryBadges } from "@/components/ui/category-badges"
 import { Button } from "@/components/ui/button"
 import {
   ArrowLeft,
@@ -100,7 +100,7 @@ export function ArticleDetail({ article, prevArticle, nextArticle, recommendedBo
   }
 
   const handleCopy = async () => {
-    const text = `${article.title}\n\n${article.content}\n\nMwandishi: ${article.author}\nKategoria: ${article.category}`
+    const text = `${article.title}\n\n${article.content}\n\nMwandishi: ${article.author}\nKategoria: ${article.categories.join(", ")}`
     const ok = await copyToClipboard(text)
     toast({ title: ok ? "Imenakiliwa" : "Kunakili kumeshindikana", variant: ok ? "default" : "destructive" })
   }
@@ -136,7 +136,7 @@ export function ArticleDetail({ article, prevArticle, nextArticle, recommendedBo
       doc.setFontSize(10)
       doc.setFont("helvetica", "normal")
       doc.setTextColor(120)
-      doc.text(article.category.toUpperCase(), margin, y)
+      doc.text(article.categories.join(", ").toUpperCase(), margin, y)
       y += 22
 
       doc.setTextColor(20)
@@ -226,9 +226,7 @@ export function ArticleDetail({ article, prevArticle, nextArticle, recommendedBo
           <Card>
             <CardHeader>
               <div className="flex items-start justify-between gap-2">
-                <Badge variant="secondary" className="w-fit mb-4">
-                  {article.category}
-                </Badge>
+                <CategoryBadges categories={article.categories} className="mb-4" />
                 <Button
                   variant="ghost"
                   size="icon"
@@ -341,7 +339,7 @@ export function ArticleDetail({ article, prevArticle, nextArticle, recommendedBo
                       <div className="min-w-0">
                         <p className="text-sm font-bold line-clamp-2">{book.title}</p>
                         <p className="text-xs text-muted-foreground mt-1">{book.author}</p>
-                        <Badge variant="outline" className="text-xs mt-2">{book.category}</Badge>
+                        <CategoryBadges categories={book.categories} variant="outline" className="mt-2" />
                       </div>
                     </CardContent>
                   </Card>

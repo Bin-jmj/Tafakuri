@@ -278,6 +278,18 @@ function CellValue({ field, row, onToggle }: { field: CmsField; row: Row; onTogg
     return <Badge variant="secondary" className="text-xs">{String(value ?? "")}</Badge>
   }
 
+  if (field.type === "multi-select") {
+    const items = Array.isArray(value) ? (value as string[]) : []
+    if (items.length === 0) return <span className="text-muted-foreground">—</span>
+    return (
+      <div className="flex flex-wrap gap-1">
+        {items.map((item) => (
+          <Badge key={item} variant="secondary" className="text-xs">{item}</Badge>
+        ))}
+      </div>
+    )
+  }
+
   if (value === null || value === undefined || value === "") return <span className="text-muted-foreground">—</span>
 
   return <span className="text-muted-foreground line-clamp-1">{String(value)}</span>

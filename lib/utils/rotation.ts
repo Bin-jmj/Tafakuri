@@ -5,7 +5,8 @@
 export interface RotationSettings {
   adhkarAsubuhiStart: string
   adhkarJioniStart: string
-  adhkarRotateSeconds: number
+  adhkarAsubuhiRotateSeconds: number
+  adhkarJioniRotateSeconds: number
   sunriseTime: string
   sunsetTime: string
   contentFajrStart: string
@@ -18,7 +19,8 @@ export interface RotationSettings {
 export const DEFAULT_ROTATION_SETTINGS: RotationSettings = {
   adhkarAsubuhiStart: "05:00",
   adhkarJioniStart: "12:00",
-  adhkarRotateSeconds: 30,
+  adhkarAsubuhiRotateSeconds: 30,
+  adhkarJioniRotateSeconds: 30,
   sunriseTime: "06:00",
   sunsetTime: "18:00",
   contentFajrStart: "05:00",
@@ -69,4 +71,9 @@ export function getAdhkarSlot(settings: RotationSettings, now: Date = new Date()
     return nowMin >= asubuhi && nowMin < jioni ? "asubuhi" : "jioni"
   }
   return nowMin >= jioni && nowMin < asubuhi ? "jioni" : "asubuhi"
+}
+
+/** Returns the configured rotation duration (seconds) for the given Adhkar slot. */
+export function getAdhkarRotateSeconds(settings: RotationSettings, slot: "asubuhi" | "jioni"): number {
+  return slot === "asubuhi" ? settings.adhkarAsubuhiRotateSeconds : settings.adhkarJioniRotateSeconds
 }

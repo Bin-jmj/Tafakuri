@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Bookmark, BookmarkCheck, Copy, Image as ImageIcon, Share2, Sun, Moon, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
+import { Bookmark, BookmarkCheck, Copy, Image as ImageIcon, Share2, Sparkles, Sun, Moon, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import {
   Dialog,
@@ -23,6 +23,7 @@ import { mapAdhkar } from "@/lib/mappers"
 import type { Adhkar } from "@/lib/types"
 import { copyToClipboard, shareContent } from "@/lib/utils/share"
 import { DEFAULT_ROTATION_SETTINGS, getAdhkarRotateSeconds, getAdhkarSlot, type RotationSettings } from "@/lib/utils/rotation"
+import { getActiveOccasionItemIds } from "@/lib/utils/occasions"
 import { downloadCanvasAsImage, drawShareImage } from "@/lib/utils/share-image"
 
 interface AdhkarWidgetProps {
@@ -37,64 +38,76 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
   const rotateMs = getAdhkarRotateSeconds(rotationSettings, slot) * 1000
   const [adhkarList, setAdhkarList] = useState<Adhkar[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [timeLeft, setTimeLeft] = useState(rotateMs)
   const [downloading, setDownloading] = useState(false)
+  const [occasionName, setOccasionName] = useState<string | null>(null)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const tickRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const cardRef = useRef<HTMLDivElement>(null)
 
-  // Load adhkar for slot
+  // Load adhkar — an active occasion's pool (e.g. Ramadhani) takes priority
+  // over the normal asubuhi/jioni slot rotation, falling back automatically
+  // whenever no occasion is configured or active.
   useEffect(() => {
     let active = true
     const supabase = createClient()
-    supabase
-      .from("adhkar")
-      .select("*")
-      .eq("slot", slot)
-      .order("sort_order", { ascending: true })
-      .then(({ data }) => {
+
+    async function load() {
+      const occasion = await getActiveOccasionItemIds(supabase, "adhkar")
+      if (!active) return
+
+      if (occasion) {
+        const { data } = await supabase.from("adhkar").select("*").in("id", occasion.itemIds)
         if (!active) return
-        setAdhkarList((data ?? []).map(mapAdhkar))
+        const byId = new Map((data ?? []).map((row) => [row.id, row]))
+        const ordered = occasion.itemIds.map((id) => byId.get(id)).filter((row): row is NonNullable<typeof row> => !!row)
+        setAdhkarList(ordered.map(mapAdhkar))
         setCurrentIndex(0)
-        setTimeLeft(rotateMs)
-      })
+        setOccasionName(occasion.occasionName)
+        return
+      }
+
+      setOccasionName(null)
+      const { data } = await supabase
+        .from("adhkar")
+        .select("*")
+        .eq("slot", slot)
+        .order("sort_order", { ascending: true })
+      if (!active) return
+      setAdhkarList((data ?? []).map(mapAdhkar))
+      setCurrentIndex(0)
+    }
+
+    load()
     return () => {
       active = false
     }
   }, [slot])
 
-  // Auto-rotate every 2 min
+  // Auto-rotate. The per-second countdown lives in its own child component
+  // (RotationCountdown below) so this interval — and this re-render — only
+  // fires once per full rotation, not once per second. Re-rendering the
+  // whole card (icons, Dialog, etc.) every second was visibly heavy on
+  // low-end devices, showing up as repaint/ghosting artifacts on the
+  // bottom icon row.
   useEffect(() => {
     if (!adhkarList.length) return
     if (intervalRef.current) clearInterval(intervalRef.current)
-    if (tickRef.current) clearInterval(tickRef.current)
-
-    setTimeLeft(rotateMs)
 
     intervalRef.current = setInterval(() => {
       setCurrentIndex((i) => (i + 1) % adhkarList.length)
-      setTimeLeft(rotateMs)
     }, rotateMs)
-
-    tickRef.current = setInterval(() => {
-      setTimeLeft((t) => Math.max(0, t - 1000))
-    }, 1000)
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
-      if (tickRef.current) clearInterval(tickRef.current)
     }
-  }, [adhkarList])
+  }, [adhkarList, rotateMs])
 
   const adhkar = adhkarList[currentIndex]
 
   const handlePrev = () => {
     setCurrentIndex((i) => (i - 1 + adhkarList.length) % adhkarList.length)
-    setTimeLeft(rotateMs)
   }
   const handleNext = () => {
     setCurrentIndex((i) => (i + 1) % adhkarList.length)
-    setTimeLeft(rotateMs)
   }
 
   const bookmarked = adhkar ? isBookmarked("adhkar", adhkar.id) : false
@@ -120,7 +133,7 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
 
   const handleShare = async () => {
     if (!adhkar) return
-    const title = `Adhkar za ${slot === "asubuhi" ? "Asubuhi" : "Jioni"}`
+    const title = occasionName ? `Adhkar za ${occasionName}` : `Adhkar za ${slot === "asubuhi" ? "Asubuhi" : "Jioni"}`
     const text = `${adhkar.arabicText}\n\n${adhkar.swahiliTranslation}\n\nChanzo: ${adhkar.reference}`
     const shared = await shareContent(title, text)
     if (!shared) toast({ title: "Kushiriki hakuwezekani", description: "Nakili maandishi badala yake" })
@@ -130,9 +143,9 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
     if (!adhkar) return
     setDownloading(true)
     try {
-      const isAsubuhi = slot === "asubuhi"
+      const title = occasionName ? `Adhkar za ${occasionName}` : `Adhkar za ${slot === "asubuhi" ? "Asubuhi" : "Jioni"}`
       const canvas = drawShareImage({
-        title: isAsubuhi ? "Adhkar za Asubuhi" : "Adhkar za Jioni",
+        title,
         meta: `Mara: ${adhkar.count}x`,
         arabicText: adhkar.arabicText,
         translation: adhkar.swahiliTranslation,
@@ -147,12 +160,7 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
     } finally {
       setDownloading(false)
     }
-  }, [adhkar, slot, toast])
-
-  // Progress: percentage of 10 min elapsed
-  const progressPct = Math.round(((rotateMs - timeLeft) / rotateMs) * 100)
-  const minutesLeft = Math.floor(timeLeft / 60000)
-  const secondsLeft = Math.floor((timeLeft % 60000) / 1000)
+  }, [adhkar, slot, occasionName, toast])
 
   if (!adhkar) return null
 
@@ -161,53 +169,55 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
       <CardHeader className="pb-3 bg-gradient-to-br from-primary/10 to-primary/5">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            {slot === "asubuhi" ? (
+            {occasionName ? (
+              <Sparkles className="h-5 w-5 text-primary flex-shrink-0" />
+            ) : slot === "asubuhi" ? (
               <Sun className="h-5 w-5 text-amber-500 flex-shrink-0" />
             ) : (
               <Moon className="h-5 w-5 text-indigo-400 flex-shrink-0" />
             )}
             <span className="font-bold text-lg truncate">
-              Adhkar za {slot === "asubuhi" ? "Asubuhi" : "Jioni"}
+              {occasionName ? `Adhkar za ${occasionName}` : `Adhkar za ${slot === "asubuhi" ? "Asubuhi" : "Jioni"}`}
             </span>
           </div>
           <Badge variant="outline" className="text-xs flex-shrink-0">
             {currentIndex + 1} / {adhkarList.length}
           </Badge>
         </div>
-        <div className="flex items-center gap-2 mt-2">
-          <Button
-            variant={slot === "asubuhi" ? "default" : "outline"}
-            size="sm"
-            className="h-7 text-xs flex-1 sm:flex-none"
-            onClick={() => setSlot("asubuhi")}
-          >
-            <Sun className="h-3 w-3 mr-1" />
-            Asubuhi
-          </Button>
-          <Button
-            variant={slot === "jioni" ? "default" : "outline"}
-            size="sm"
-            className="h-7 text-xs flex-1 sm:flex-none"
-            onClick={() => setSlot("jioni")}
-          >
-            <Moon className="h-3 w-3 mr-1" />
-            Jioni
-          </Button>
-          <Link href={`/adhkar/${slot === "asubuhi" ? "Asubuhi" : "Jioni"}`} className="ml-auto">
-            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground">
-              Tazama Zote
-              <ArrowRight className="h-3 w-3" />
+        {!occasionName && (
+          <div className="flex items-center gap-2 mt-2">
+            <Button
+              variant={slot === "asubuhi" ? "default" : "outline"}
+              size="sm"
+              className="h-7 text-xs flex-1 sm:flex-none"
+              onClick={() => setSlot("asubuhi")}
+            >
+              <Sun className="h-3 w-3 mr-1" />
+              Asubuhi
             </Button>
-          </Link>
-        </div>
-        {/* 10-min rotation progress */}
-        <div className="mt-3 space-y-1">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Inabadilika kila sekunde {rotateMs / 1000}</span>
-            <span>{minutesLeft}:{String(secondsLeft).padStart(2, "0")} iliyobaki</span>
+            <Button
+              variant={slot === "jioni" ? "default" : "outline"}
+              size="sm"
+              className="h-7 text-xs flex-1 sm:flex-none"
+              onClick={() => setSlot("jioni")}
+            >
+              <Moon className="h-3 w-3 mr-1" />
+              Jioni
+            </Button>
+            <Link href={`/adhkar/${slot === "asubuhi" ? "Asubuhi" : "Jioni"}`} className="ml-auto">
+              <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground">
+                Tazama Zote
+                <ArrowRight className="h-3 w-3" />
+              </Button>
+            </Link>
           </div>
-          <Progress value={progressPct} className="h-1.5" />
-        </div>
+        )}
+        {/* 10-min rotation progress */}
+        <RotationCountdown
+          rotateMs={rotateMs}
+          resetKey={`${slot}-${currentIndex}`}
+          label={`Inabadilika kila sekunde ${rotateMs / 1000}`}
+        />
       </CardHeader>
 
       <CardContent className="p-5">
@@ -296,5 +306,34 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
         </div>
       </CardContent>
     </Card>
+  )
+}
+
+// Isolated so the once-per-second tick only re-renders this small block —
+// not the whole card (icons, Dialog, etc.), which was causing repaint
+// artifacts on low-end devices.
+function RotationCountdown({ rotateMs, resetKey, label }: { rotateMs: number; resetKey: string; label: string }) {
+  const [timeLeft, setTimeLeft] = useState(rotateMs)
+
+  useEffect(() => {
+    setTimeLeft(rotateMs)
+    const tick = setInterval(() => {
+      setTimeLeft((t) => Math.max(0, t - 1000))
+    }, 1000)
+    return () => clearInterval(tick)
+  }, [resetKey, rotateMs])
+
+  const progressPct = Math.round(((rotateMs - timeLeft) / rotateMs) * 100)
+  const minutesLeft = Math.floor(timeLeft / 60000)
+  const secondsLeft = Math.floor((timeLeft % 60000) / 1000)
+
+  return (
+    <div className="mt-3 space-y-1">
+      <div className="flex justify-between text-xs text-muted-foreground">
+        <span>{label}</span>
+        <span>{minutesLeft}:{String(secondsLeft).padStart(2, "0")} iliyobaki</span>
+      </div>
+      <Progress value={progressPct} className="h-1.5" />
+    </div>
   )
 }

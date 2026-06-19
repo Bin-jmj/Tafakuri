@@ -18,6 +18,7 @@ import {
   HardDrive,
   Clock,
   Tag,
+  CalendarDays,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -60,6 +61,11 @@ const navItems = [
     label: "Kategoria",
     href: "/admin/kategoria",
     icon: Tag,
+  },
+  {
+    label: "Matukio Maalum",
+    href: "/admin/matukio",
+    icon: CalendarDays,
   },
   {
     label: "Watumiaji",

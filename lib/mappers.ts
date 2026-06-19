@@ -1,7 +1,7 @@
 // Maps Supabase row shapes (snake_case) to the app's existing camelCase types.
 
 import type { Database } from "@/lib/supabase/types"
-import type { Adhkar, Article, Book, Dua, Hadith, QuranVerse, Surah } from "@/lib/types"
+import type { Adhkar, Article, Book, Dua, Hadith, Occasion, OccasionItem, QuranVerse, Surah } from "@/lib/types"
 import type { RotationSettings } from "@/lib/utils/rotation"
 
 type Tables = Database["public"]["Tables"]
@@ -88,6 +88,12 @@ export function mapRotationSettings(row: Tables["rotation_settings"]["Row"]): Ro
     adhkarJioniRotateSeconds: row.adhkar_jioni_rotate_seconds ?? 30,
     sunriseTime: row.sunrise_time?.slice(0, 5) ?? "06:00",
     sunsetTime: row.sunset_time?.slice(0, 5) ?? "18:00",
+    hijriOffsetDays: row.hijri_offset_days ?? 0,
+    prayerOffsetFajr: row.prayer_offset_fajr ?? 0,
+    prayerOffsetDhuhr: row.prayer_offset_dhuhr ?? 0,
+    prayerOffsetAsr: row.prayer_offset_asr ?? 0,
+    prayerOffsetMaghrib: row.prayer_offset_maghrib ?? 0,
+    prayerOffsetIsha: row.prayer_offset_isha ?? 0,
     contentFajrStart: row.content_fajr_start,
     contentDhuhrStart: row.content_dhuhr_start,
     contentAsrStart: row.content_asr_start,
@@ -111,5 +117,27 @@ export function mapBook(row: Tables["media_items"]["Row"]): Book {
     downloadCount: row.download_count,
     addedDate: row.created_at,
     isAvailable: row.is_available,
+  }
+}
+
+export function mapOccasion(row: Tables["occasions"]["Row"]): Occasion {
+  return {
+    id: row.id,
+    name: row.name,
+    recurrence: row.recurrence,
+    startDate: row.start_date,
+    endDate: row.end_date,
+    priority: row.priority,
+    isActive: row.is_active,
+  }
+}
+
+export function mapOccasionItem(row: Tables["occasion_items"]["Row"]): OccasionItem {
+  return {
+    id: row.id,
+    occasionId: row.occasion_id,
+    contentType: row.content_type,
+    contentId: row.content_id,
+    order: row.sort_order,
   }
 }

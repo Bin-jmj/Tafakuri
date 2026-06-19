@@ -35,14 +35,19 @@ const HIJRI_FORMATTER = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
 })
 
-export function gregorianToHijri(date: Date = new Date()): HijriDate {
+/**
+ * `offsetDays` corrects for moon-sighting lag against the tabular/civil
+ * calculation (admin-configurable, see rotation_settings.hijri_offset_days).
+ */
+export function gregorianToHijri(date: Date = new Date(), offsetDays = 0): HijriDate {
   // The Islamic day begins at Maghrib, not midnight - once today's Maghrib has
   // passed, the Hijri date should already show tomorrow's date.
   const eatNow = new Date(date.getTime() + TIMEZONE_OFFSET_MS)
   const maghrib = getPrayerTimes(eatNow.getUTCFullYear(), eatNow.getUTCMonth() + 1, eatNow.getUTCDate()).maghrib
   const effectiveDate = date.getTime() >= maghrib.getTime() ? new Date(date.getTime() + 24 * 3600 * 1000) : date
+  const correctedDate = new Date(effectiveDate.getTime() + offsetDays * 24 * 3600 * 1000)
 
-  const parts = HIJRI_FORMATTER.formatToParts(effectiveDate)
+  const parts = HIJRI_FORMATTER.formatToParts(correctedDate)
   const day = Number(parts.find((p) => p.type === "day")?.value)
   const month = Number(parts.find((p) => p.type === "month")?.value)
   const year = Number(parts.find((p) => p.type === "year")?.value)
@@ -55,9 +60,24 @@ export function gregorianToHijri(date: Date = new Date()): HijriDate {
   }
 }
 
-export function formatHijriDate(date: Date = new Date()): string {
-  const h = gregorianToHijri(date)
+export function formatHijriDate(date: Date = new Date(), offsetDays = 0): string {
+  const h = gregorianToHijri(date, offsetDays)
   return `${h.day} ${h.monthName} ${h.year} AH`
+}
+
+/**
+ * Reverse lookup: finds the next upcoming Gregorian date whose Hijri date
+ * matches the given month/day, searching forward from `from`. Used to
+ * suggest start/end dates for recurring occasions (Ramadhani, Idd Fitri,
+ * Idd Adha) — admin can still nudge the result for moon-sighting.
+ */
+export function findNextHijriOccurrence(hijriMonth: number, hijriDay: number, offsetDays = 0, from: Date = new Date()): Date {
+  for (let i = 0; i < 400; i++) {
+    const candidate = new Date(from.getTime() + i * 24 * 3600 * 1000)
+    const h = gregorianToHijri(candidate, offsetDays)
+    if (h.month === hijriMonth && h.day === hijriDay) return candidate
+  }
+  return from
 }
 
 const GREGORIAN_WEEKDAYS_SW = [

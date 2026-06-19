@@ -302,6 +302,52 @@ export const categoriesResource: CmsResourceConfig = {
   },
 }
 
+export const occasionsResource: CmsResourceConfig = {
+  key: "occasions",
+  table: "occasions",
+  titleSingular: "Tukio",
+  titlePlural: "Matukio Maalum",
+  description: "Simamia matukio maalum (Ramadhani, Idd, Ijumaa) na muda wake — maudhui ya kila tukio yanasimamiwa baada ya kuhifadhi",
+  addLabel: "Ongeza Tukio",
+  searchPlaceholder: "Tafuta tukio...",
+  primaryColumn: "name",
+  orderBy: { column: "priority", ascending: true },
+  fields: [
+    { name: "name", label: "Jina la Tukio", type: "text", showInTable: true, searchable: true },
+    {
+      name: "recurrence",
+      label: "Aina ya Marudio",
+      type: "select",
+      options: [
+        { label: "Kila Ijumaa", value: "weekly_friday" },
+        { label: "Tarehe Maalum", value: "date_range" },
+      ],
+      showInTable: true,
+    },
+    { name: "start_date", label: "Kuanzia Tarehe", type: "date", helpText: "Inahitajika tu kwa 'Tarehe Maalum'" },
+    { name: "end_date", label: "Hadi Tarehe", type: "date", helpText: "Inahitajika tu kwa 'Tarehe Maalum'" },
+    { name: "priority", label: "Kipaumbele (chini = juu zaidi)", type: "number", showInTable: true },
+    { name: "is_active", label: "Inatumika", type: "boolean", showInTable: true },
+  ],
+  schema: z.object({
+    name: z.string().min(1, "Jina linahitajika"),
+    recurrence: z.enum(["weekly_friday", "date_range"]),
+    start_date: optionalText,
+    end_date: optionalText,
+    priority: z.coerce.number().int().default(0),
+    is_active: z.boolean().default(true),
+  }),
+  defaultValues: {
+    name: "",
+    recurrence: "date_range",
+    start_date: "",
+    end_date: "",
+    priority: 0,
+    is_active: true,
+  },
+  rowLink: (row) => ({ href: `/admin/matukio/${row.id}`, label: "Simamia Maudhui" }),
+}
+
 export const cmsResources: Record<string, CmsResourceConfig> = {
   [hadithsResource.key]: hadithsResource,
   [duasResource.key]: duasResource,
@@ -312,4 +358,5 @@ export const cmsResources: Record<string, CmsResourceConfig> = {
   [mediaAudioResource.key]: mediaAudioResource,
   [mediaVideoResource.key]: mediaVideoResource,
   [categoriesResource.key]: categoriesResource,
+  [occasionsResource.key]: occasionsResource,
 }

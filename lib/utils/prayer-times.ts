@@ -88,8 +88,32 @@ export interface PrayerTimes {
   isha: Date
 }
 
+/**
+ * Per-prayer minute corrections against the calculated time, e.g. when local
+ * announced times consistently differ from the Muslim World League angles
+ * this calculation assumes. Admin-configurable, see rotation_settings.
+ */
+export interface PrayerOffsets {
+  fajr: number
+  dhuhr: number
+  asr: number
+  maghrib: number
+  isha: number
+}
+
+export const ZERO_PRAYER_OFFSETS: PrayerOffsets = { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 }
+
+function addMinutes(date: Date, minutes: number): Date {
+  return minutes === 0 ? date : new Date(date.getTime() + minutes * 60_000)
+}
+
 /** Computes the 5 daily prayer times (plus sunrise) for the given EAT calendar date. */
-export function getPrayerTimes(year: number, month: number, day: number): PrayerTimes {
+export function getPrayerTimes(
+  year: number,
+  month: number,
+  day: number,
+  offsets: PrayerOffsets = ZERO_PRAYER_OFFSETS,
+): PrayerTimes {
   const jDate = julianDate(year, month, day)
   const lngCorrection = LNG / 15
 
@@ -103,12 +127,12 @@ export function getPrayerTimes(year: number, month: number, day: number): Prayer
   const isha = toLocal(sunAngleTime(jDate, ISHA_ANGLE, 19 / 24, false))
 
   return {
-    fajr: toUtcDate(year, month, day, fajr),
-    sunrise: toUtcDate(year, month, day, sunrise),
-    dhuhr: toUtcDate(year, month, day, dhuhr),
-    asr: toUtcDate(year, month, day, asr),
-    maghrib: toUtcDate(year, month, day, maghrib),
-    isha: toUtcDate(year, month, day, isha),
+    fajr: addMinutes(toUtcDate(year, month, day, fajr), offsets.fajr),
+    sunrise: toUtcDate(year, month, day, sunrise), // not a prayer — no offset
+    dhuhr: addMinutes(toUtcDate(year, month, day, dhuhr), offsets.dhuhr),
+    asr: addMinutes(toUtcDate(year, month, day, asr), offsets.asr),
+    maghrib: addMinutes(toUtcDate(year, month, day, maghrib), offsets.maghrib),
+    isha: addMinutes(toUtcDate(year, month, day, isha), offsets.isha),
   }
 }
 
@@ -127,14 +151,14 @@ export interface NextPrayer {
 }
 
 /** Returns the next upcoming daily prayer (Fajr/Dhuhr/Asr/Maghrib/Isha) relative to `now`. */
-export function getNextPrayer(now: Date = new Date()): NextPrayer {
+export function getNextPrayer(now: Date = new Date(), offsets: PrayerOffsets = ZERO_PRAYER_OFFSETS): NextPrayer {
   // Determine "today" in EAT
   const eatNow = new Date(now.getTime() + TIMEZONE * 3600 * 1000)
   const year = eatNow.getUTCFullYear()
   const month = eatNow.getUTCMonth() + 1
   const day = eatNow.getUTCDate()
 
-  const today = getPrayerTimes(year, month, day)
+  const today = getPrayerTimes(year, month, day, offsets)
   const order: (keyof Omit<PrayerTimes, "sunrise">)[] = ["fajr", "dhuhr", "asr", "maghrib", "isha"]
 
   for (const name of order) {
@@ -148,7 +172,7 @@ export function getNextPrayer(now: Date = new Date()): NextPrayer {
   const tYear = tomorrow.getUTCFullYear()
   const tMonth = tomorrow.getUTCMonth() + 1
   const tDay = tomorrow.getUTCDate()
-  const fajrTomorrow = getPrayerTimes(tYear, tMonth, tDay).fajr
+  const fajrTomorrow = getPrayerTimes(tYear, tMonth, tDay, offsets).fajr
   return { name: "fajr", label: PRAYER_NAMES_SW.fajr, time: fajrTomorrow }
 }
 

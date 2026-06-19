@@ -5,10 +5,16 @@ import { Card, CardContent } from "@/components/ui/card"
 import { CalendarDays, Clock, Moon } from "lucide-react"
 import { formatGregorianDateSw, formatHijriDate } from "@/lib/utils/hijri"
 import { useNextPrayer } from "@/hooks/use-next-prayer"
+import { ZERO_PRAYER_OFFSETS, type PrayerOffsets } from "@/lib/utils/prayer-times"
 
-export function TodayDateCard() {
+interface TodayDateCardProps {
+  hijriOffsetDays?: number
+  prayerOffsets?: PrayerOffsets
+}
+
+export function TodayDateCard({ hijriOffsetDays = 0, prayerOffsets = ZERO_PRAYER_OFFSETS }: TodayDateCardProps) {
   const [now, setNow] = useState<Date | null>(null)
-  const nextPrayer = useNextPrayer()
+  const nextPrayer = useNextPrayer(prayerOffsets)
 
   useEffect(() => {
     setNow(new Date())
@@ -34,7 +40,7 @@ export function TodayDateCard() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Kalenda ya Kiislamu (Hijri)</p>
-              <p className="font-semibold">{now ? formatHijriDate(now) : " "}</p>
+              <p className="font-semibold">{now ? formatHijriDate(now, hijriOffsetDays) : " "}</p>
             </div>
           </div>
         </div>

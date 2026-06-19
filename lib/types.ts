@@ -88,3 +88,23 @@ export interface Book {
   isAvailable: boolean
 }
 
+export type OccasionContentType = "hadith" | "dua" | "adhkar" | "quran_verse"
+
+export interface Occasion {
+  id: string
+  name: string
+  recurrence: "weekly_friday" | "date_range"
+  startDate: string | null
+  endDate: string | null
+  priority: number
+  isActive: boolean
+}
+
+export interface OccasionItem {
+  id: string
+  occasionId: string
+  contentType: OccasionContentType
+  contentId: string
+  order: number
+}
+

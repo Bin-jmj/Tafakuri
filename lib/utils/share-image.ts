@@ -72,7 +72,7 @@ export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
   const arabicFont = "bold 32px serif"
   const arabicLines = wrapText(ctx, opts.arabicText, WIDTH - 100, arabicFont).slice(0, 4)
   const trLines = wrapText(ctx, opts.translation, WIDTH - 120, "24px sans-serif").slice(0, 4)
-  const noteLines = opts.note ? wrapText(ctx, opts.note, WIDTH - 160, "15px sans-serif").slice(0, 12) : []
+  const noteLines = opts.note ? wrapText(ctx, opts.note, WIDTH - 160, "18px sans-serif").slice(0, 12) : []
 
   let contentHeight = 160
   contentHeight += arabicLines.length * 46
@@ -81,8 +81,8 @@ export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
   contentHeight += trLines.length * 38
   if (noteLines.length) {
     contentHeight += 14 // gap before note box
-    contentHeight += 30 + noteLines.length * 22
-    if (opts.noteLabel) contentHeight += 22
+    contentHeight += 34 + noteLines.length * 26
+    if (opts.noteLabel) contentHeight += 24
   }
   contentHeight += 90 // source line + watermark
 
@@ -180,26 +180,26 @@ export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
   // Optional note (benefit / tafsir)
   if (noteLines.length) {
     y += 14
-    const noteFont = "15px sans-serif"
-    const boxHeight = 30 + noteLines.length * 22 + (opts.noteLabel ? 22 : 0)
+    const noteFont = "18px sans-serif"
+    const boxHeight = 34 + noteLines.length * 26 + (opts.noteLabel ? 24 : 0)
     const boxTop = y
     ctx.fillStyle = "rgba(255,255,255,0.08)"
     ctx.beginPath()
     ctx.roundRect(80, boxTop, WIDTH - 160, boxHeight, 12)
     ctx.fill()
 
-    let noteY = boxTop + 26
+    let noteY = boxTop + 30
     if (opts.noteLabel) {
-      ctx.font = "bold 14px sans-serif"
-      ctx.fillStyle = "rgba(255,255,255,0.85)"
+      ctx.font = "bold 17px sans-serif"
+      ctx.fillStyle = "rgba(255,255,255,0.9)"
       ctx.fillText(opts.noteLabel, WIDTH / 2, noteY)
-      noteY += 22
+      noteY += 24
     }
     ctx.font = noteFont
-    ctx.fillStyle = "rgba(255,255,255,0.75)"
+    ctx.fillStyle = "rgba(255,255,255,0.85)"
     for (const line of noteLines) {
       ctx.fillText(line, WIDTH / 2, noteY)
-      noteY += 22
+      noteY += 26
     }
   }
 
@@ -207,11 +207,11 @@ export function drawShareImage(opts: ShareImageOptions): HTMLCanvasElement {
   if (opts.source) {
     ctx.font = "italic 15px sans-serif"
     ctx.fillStyle = "rgba(255,255,255,0.6)"
-    ctx.fillText(opts.source, WIDTH / 2, height - 50)
+    ctx.fillText(opts.source, WIDTH / 2, height - 55)
   }
-  ctx.font = "bold 17px sans-serif"
-  ctx.fillStyle = "rgba(255,255,255,0.45)"
-  ctx.fillText("tafakuri.co.tz", WIDTH / 2, height - 25)
+  ctx.font = "bold 20px sans-serif"
+  ctx.fillStyle = "rgba(255,255,255,0.85)"
+  ctx.fillText("tafakuri.co.tz", WIDTH / 2, height - 22)
 
   return canvas
 }

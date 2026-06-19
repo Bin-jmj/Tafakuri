@@ -8,10 +8,12 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { BookOpen, Clock, FileText, Home, Library, LogIn, Menu, Moon, Scroll, Search, Sparkles, Sun, User, HandHeart } from "lucide-react"
+import { BookOpen, Clock, FileText, Home, Library, LogIn, LogOut, Menu, Moon, Scroll, Search, Sparkles, Sun, User, HandHeart } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNextPrayer } from "@/hooks/use-next-prayer"
 import { useUser } from "@/hooks/use-user"
+import { signOut } from "@/app/auth/actions"
+import { ZERO_PRAYER_OFFSETS, type PrayerOffsets } from "@/lib/utils/prayer-times"
 
 const navItems = [
   { href: "/", label: "Nyumbani", icon: Home },
@@ -25,15 +27,16 @@ const navItems = [
   { href: "/profile", label: "Alama", icon: User },
 ]
 
-export function MobileNav() {
+export function MobileNav({ prayerOffsets = ZERO_PRAYER_OFFSETS }: { prayerOffsets?: PrayerOffsets }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
-  const nextPrayer = useNextPrayer()
+  const nextPrayer = useNextPrayer(prayerOffsets)
   const { resolvedTheme, setTheme } = useTheme()
   const { user, loading: userLoading } = useUser()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   const showLogin = mounted && !userLoading && !user
+  const showLogout = mounted && !userLoading && !!user
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -78,6 +81,19 @@ export function MobileNav() {
         <nav className="flex flex-col gap-2 mt-6">
           {navItems.map((item) => {
             const isLoginSlot = item.href === "/profile" && showLogin
+            const isLogoutSlot = item.href === "/profile" && showLogout
+
+            if (isLogoutSlot) {
+              return (
+                <form action={signOut} key={item.href}>
+                  <Button type="submit" variant="ghost" className="w-full justify-start gap-3">
+                    <LogOut className="h-5 w-5" />
+                    Toka
+                  </Button>
+                </form>
+              )
+            }
+
             const Icon = isLoginSlot ? LogIn : item.icon
             const label = isLoginSlot ? "Ingia" : item.label
             const href = isLoginSlot ? "/auth/login" : item.href

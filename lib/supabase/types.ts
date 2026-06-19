@@ -208,6 +208,42 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["categories"]["Row"]>
         Relationships: []
       }
+      occasions: {
+        Row: {
+          id: string
+          name: string
+          recurrence: "weekly_friday" | "date_range"
+          start_date: string | null
+          end_date: string | null
+          priority: number
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: Partial<Database["public"]["Tables"]["occasions"]["Row"]> & {
+          name: string
+          recurrence: "weekly_friday" | "date_range"
+        }
+        Update: Partial<Database["public"]["Tables"]["occasions"]["Row"]>
+        Relationships: []
+      }
+      occasion_items: {
+        Row: {
+          id: string
+          occasion_id: string
+          content_type: "hadith" | "dua" | "adhkar" | "quran_verse"
+          content_id: string
+          sort_order: number
+          created_at: string
+        }
+        Insert: Partial<Database["public"]["Tables"]["occasion_items"]["Row"]> & {
+          occasion_id: string
+          content_type: "hadith" | "dua" | "adhkar" | "quran_verse"
+          content_id: string
+        }
+        Update: Partial<Database["public"]["Tables"]["occasion_items"]["Row"]>
+        Relationships: []
+      }
       rotation_settings: {
         Row: {
           id: number
@@ -217,6 +253,12 @@ export interface Database {
           adhkar_jioni_rotate_seconds: number
           sunrise_time: string
           sunset_time: string
+          hijri_offset_days: number
+          prayer_offset_fajr: number
+          prayer_offset_dhuhr: number
+          prayer_offset_asr: number
+          prayer_offset_maghrib: number
+          prayer_offset_isha: number
           content_fajr_start: string
           content_dhuhr_start: string
           content_asr_start: string

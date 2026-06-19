@@ -10,7 +10,8 @@ import { BookOpen, FileText, HandHeart, Library, Scroll, Sparkles, ArrowRight, N
 import { createClient } from "@/lib/supabase/server"
 import { mapArticle, mapHadith, mapQuranVerse, mapRotationSettings } from "@/lib/mappers"
 import { ArticleCard } from "@/components/articles/article-card"
-import { DEFAULT_ROTATION_SETTINGS, getContentSlotIndex } from "@/lib/utils/rotation"
+import { DEFAULT_ROTATION_SETTINGS, getContentSlotIndex, getPrayerOffsets } from "@/lib/utils/rotation"
+import { getActiveOccasionItemIds, pickRotatingId } from "@/lib/utils/occasions"
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -19,14 +20,28 @@ export default async function HomePage() {
   const rotationSettings = rotationRow ? mapRotationSettings(rotationRow) : DEFAULT_ROTATION_SETTINGS
   const contentSlot = getContentSlotIndex(rotationSettings)
 
-  const [{ data: hadithRow }, { data: verseRow }, { data: articleRows }] = await Promise.all([
+  const [{ data: hadithRow }, { data: verseRow }, { data: articleRows }, hadithOccasion, verseOccasion] = await Promise.all([
     supabase.rpc("get_daily_hadith", { p_slot: contentSlot }),
     supabase.rpc("get_daily_verse", { p_slot: contentSlot }),
     supabase.from("articles").select("*").order("published_date", { ascending: false }).limit(3),
+    getActiveOccasionItemIds(supabase, "hadith"),
+    getActiveOccasionItemIds(supabase, "quran_verse"),
   ])
 
-  const dailyHadith = hadithRow ? mapHadith(hadithRow) : null
-  const dailyVerse = verseRow ? mapQuranVerse(verseRow) : null
+  let dailyHadith = hadithRow ? mapHadith(hadithRow) : null
+  if (hadithOccasion) {
+    const pickId = pickRotatingId(hadithOccasion.itemIds, contentSlot)
+    const { data: occasionHadith } = await supabase.from("hadiths").select("*").eq("id", pickId).maybeSingle()
+    if (occasionHadith) dailyHadith = mapHadith(occasionHadith)
+  }
+
+  let dailyVerse = verseRow ? mapQuranVerse(verseRow) : null
+  if (verseOccasion) {
+    const pickId = pickRotatingId(verseOccasion.itemIds, contentSlot)
+    const { data: occasionVerse } = await supabase.from("quran_verses").select("*").eq("id", pickId).maybeSingle()
+    if (occasionVerse) dailyVerse = mapQuranVerse(occasionVerse)
+  }
+
   const latestArticles = (articleRows ?? []).map(mapArticle)
 
   let dailySurahName: string | undefined
@@ -74,7 +89,7 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
-        <TodayDateCard />
+        <TodayDateCard hijriOffsetDays={rotationSettings.hijriOffsetDays} prayerOffsets={getPrayerOffsets(rotationSettings)} />
       </div>
 
       {/* Tafakuri ya Leo — daily hadith, adhkar, verse are the first interactive content */}
@@ -95,7 +110,7 @@ export default async function HomePage() {
       {/* Feature Cards */}
       <div>
         <h2 className="text-xl font-bold mb-4">Vifungu</h2>
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           <FeatureCard
             title="Qur'ani Tukufu"
             description="Soma na jifunze Qur'ani kwa Kiswahili"
@@ -111,11 +126,18 @@ export default async function HomePage() {
             gradient="bg-gradient-to-r from-accent to-accent/60"
           />
           <FeatureCard
-            title="Dua na Adhkar"
-            description="Dua za kila siku na adhkar"
+            title="Dua"
+            description="Dua za kila siku kwa kila hali"
             icon={HandHeart}
             href="/dua"
             gradient="bg-gradient-to-r from-chart-2 to-chart-2/60"
+          />
+          <FeatureCard
+            title="Adhkar"
+            description="Adhkar za asubuhi, jioni na zaidi"
+            icon={Sparkles}
+            href="/adhkar"
+            gradient="bg-gradient-to-r from-chart-5 to-chart-5/60"
           />
           <FeatureCard
             title="Vitabu"

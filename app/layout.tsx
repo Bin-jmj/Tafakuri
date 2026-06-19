@@ -10,7 +10,8 @@ import { InstallBanner } from "@/components/pwa/install-banner"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AutoTheme } from "@/components/auto-theme"
 import { createClient } from "@/lib/supabase/server"
-import { DEFAULT_ROTATION_SETTINGS } from "@/lib/utils/rotation"
+import { mapRotationSettings } from "@/lib/mappers"
+import { DEFAULT_ROTATION_SETTINGS, getPrayerOffsets } from "@/lib/utils/rotation"
 import "./globals.css"
 
 const amiri = Amiri({
@@ -57,17 +58,16 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const supabase = await createClient()
-  const { data: rotationRow } = await supabase.from("rotation_settings").select("sunrise_time, sunset_time").eq("id", 1).single()
-  const settings = rotationRow
-    ? { sunriseTime: rotationRow.sunrise_time?.slice(0, 5) ?? "06:00", sunsetTime: rotationRow.sunset_time?.slice(0, 5) ?? "18:00" }
-    : { sunriseTime: DEFAULT_ROTATION_SETTINGS.sunriseTime, sunsetTime: DEFAULT_ROTATION_SETTINGS.sunsetTime }
+  const { data: rotationRow } = await supabase.from("rotation_settings").select("*").eq("id", 1).single()
+  const settings = rotationRow ? mapRotationSettings(rotationRow) : DEFAULT_ROTATION_SETTINGS
+  const prayerOffsets = getPrayerOffsets(settings)
 
   return (
     <html lang="sw" dir="ltr" translate="no" suppressHydrationWarning>
       <body className={`${geist.variable} ${amiri.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           <AutoTheme sunrise={settings.sunriseTime} sunset={settings.sunsetTime} />
-          <Header />
+          <Header prayerOffsets={prayerOffsets} />
           <main className="min-h-[calc(100vh-4rem)]">{children}</main>
           <Footer />
           <Toaster />

@@ -69,4 +69,6 @@ export interface CmsResourceConfig {
   primaryColumn: string
   /** Extra filter controls shown above the table (e.g. filter by sura or aya range). */
   extraFilters?: CmsExtraFilter[]
+  /** Optional per-row link shown before Edit/Delete (e.g. "Manage content" for occasions). */
+  rowLink?: (row: Record<string, unknown> & { id: string }) => { href: string; label: string }
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { CmsPageShell } from "@/components/admin/cms-page-shell"
 import { ContentDialog } from "@/components/admin/content-dialog"
 import { CmsFieldInput } from "./cms-field-input"
@@ -182,11 +183,18 @@ export function CmsResourcePage({ config }: { config: CmsResourceConfig }) {
                         </td>
                         {tableFields.map((f) => (
                           <td key={f.name} className="px-4 py-4 hidden sm:table-cell">
-                            <CellValue field={f} row={row} onToggle={(patch) => update(row.id, patch)} />
+                            <CellValue field={f} row={row} dynamicOptions={dynamicOptions} onToggle={(patch) => update(row.id, patch)} />
                           </td>
                         ))}
                         <td className="px-5 py-4">
                           <div className="flex items-center justify-end gap-1.5">
+                            {config.rowLink && (
+                              <Link href={config.rowLink(row).href}>
+                                <Button variant="outline" size="sm" className="h-8 text-xs">
+                                  {config.rowLink(row).label}
+                                </Button>
+                              </Link>
+                            )}
                             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(row)}>
                               <Pencil className="h-3.5 w-3.5" />
                             </Button>
@@ -248,7 +256,17 @@ export function CmsResourcePage({ config }: { config: CmsResourceConfig }) {
   )
 }
 
-function CellValue({ field, row, onToggle }: { field: CmsField; row: Row; onToggle: (patch: Record<string, unknown>) => void }) {
+function CellValue({
+  field,
+  row,
+  onToggle,
+  dynamicOptions,
+}: {
+  field: CmsField
+  row: Row
+  onToggle: (patch: Record<string, unknown>) => void
+  dynamicOptions?: Record<string, CmsFieldOption[]>
+}) {
   const value = row[field.name]
 
   if (field.type === "boolean") {
@@ -275,7 +293,9 @@ function CellValue({ field, row, onToggle }: { field: CmsField; row: Row; onTogg
   }
 
   if (field.type === "select") {
-    return <Badge variant="secondary" className="text-xs">{String(value ?? "")}</Badge>
+    const opts = (field.optionsKey && dynamicOptions?.[field.optionsKey]) ? dynamicOptions[field.optionsKey] : (field.options ?? [])
+    const label = opts.find((o) => o.value === value)?.label ?? String(value ?? "")
+    return <Badge variant="secondary" className="text-xs">{label}</Badge>
   }
 
   if (field.type === "multi-select") {

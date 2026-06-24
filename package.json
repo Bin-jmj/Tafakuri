@@ -10,7 +10,8 @@
     "seed": "tsx --env-file=.env scripts/seed.ts",
     "seed:quran": "tsx --env-file=.env scripts/seed-quran.ts",
     "seed:hadiths": "tsx --env-file=.env scripts/seed-hadiths.ts",
-    "seed:duas": "tsx --env-file=.env scripts/seed-duas.ts"
+    "seed:duas": "tsx --env-file=.env scripts/seed-duas.ts",
+    "migrate:drive-to-storage": "tsx --env-file=.env scripts/migrate-drive-to-storage.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

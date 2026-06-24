@@ -219,7 +219,7 @@ function DriveFileFieldControl({ field, values, onChange }: { field: CmsField; v
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
 
-  const driveFileId = values.drive_file_id as string | null
+  const storagePath = values.storage_path as string | null
   const fileSizeBytes = values.file_size_bytes as number | null
 
   async function handleFile(file: File) {
@@ -228,15 +228,15 @@ function DriveFileFieldControl({ field, values, onChange }: { field: CmsField; v
       const formData = new FormData()
       formData.append("file", file)
       formData.append("type", field.driveType ?? "book")
-      const res = await fetch("/api/drive/upload", { method: "POST", body: formData })
+      const res = await fetch("/api/storage/media", { method: "POST", body: formData })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? "Imeshindikana kupakia faili")
       onChange({
-        drive_file_id: json.driveFileId,
+        storage_path: json.storagePath,
         drive_mime_type: json.mimeType,
         file_size_bytes: json.sizeBytes ?? null,
       })
-      toast({ title: "Faili limepakiwa kwenye Google Drive" })
+      toast({ title: "Faili limepakiwa" })
     } catch (e) {
       toast({ title: e instanceof Error ? e.message : "Hitilafu", variant: "destructive" })
     } finally {
@@ -246,7 +246,7 @@ function DriveFileFieldControl({ field, values, onChange }: { field: CmsField; v
 
   return (
     <div className="space-y-2">
-      {driveFileId ? (
+      {storagePath ? (
         <div className="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400">
           <FileCheck2 className="h-4 w-4" />
           <span>Limepakiwa{fileSizeBytes ? ` (${(fileSizeBytes / (1024 * 1024)).toFixed(1)} MB)` : ""}</span>
@@ -262,10 +262,10 @@ function DriveFileFieldControl({ field, values, onChange }: { field: CmsField; v
         }} />
         <Button type="button" variant="outline" size="sm" className="gap-2" onClick={() => inputRef.current?.click()} disabled={uploading}>
           {uploading ? <Spinner className="h-4 w-4" /> : <Upload className="h-4 w-4" />}
-          {driveFileId ? "Badilisha Faili" : "Pakia Faili"}
+          {storagePath ? "Badilisha Faili" : "Pakia Faili"}
         </Button>
-        {driveFileId && (
-          <Button type="button" variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => onChange({ drive_file_id: null, drive_mime_type: null, file_size_bytes: null })}>
+        {storagePath && (
+          <Button type="button" variant="ghost" size="sm" className="gap-1 text-muted-foreground" onClick={() => onChange({ storage_path: null, drive_mime_type: null, file_size_bytes: null })}>
             <X className="h-4 w-4" />
             Ondoa
           </Button>

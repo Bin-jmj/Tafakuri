@@ -110,7 +110,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url)
 
   // Downloaded book/PDF files - cache once opened so they're readable offline
-  if (url.pathname.startsWith("/api/drive/file/")) {
+  if (url.pathname.startsWith("/api/media/file/") || url.pathname.startsWith("/api/drive/file/")) {
     event.respondWith(cacheFirst(request, BOOKS_CACHE))
     return
   }

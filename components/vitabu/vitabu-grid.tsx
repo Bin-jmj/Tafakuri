@@ -6,10 +6,11 @@ import { CategoryBadges } from "@/components/ui/category-badges"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Bookmark, BookmarkCheck, BookOpen, Download, Search, Share2 } from "lucide-react"
+import { Bookmark, BookmarkCheck, BookOpen, Download, Loader2, Search, Share2 } from "lucide-react"
 import { useBookmarks } from "@/hooks/use-bookmarks"
 import { useToast } from "@/hooks/use-toast"
 import { shareContent } from "@/lib/utils/share"
+import { downloadFile } from "@/lib/utils/download"
 import type { Book } from "@/lib/types"
 import Image from "next/image"
 import Link from "next/link"
@@ -23,6 +24,7 @@ interface VitabuGridProps {
 export function VitabuGrid({ books }: VitabuGridProps) {
   const [search, setSearch] = useState("")
   const [category, setCategory] = useState("Zote")
+  const [downloadingId, setDownloadingId] = useState<string | null>(null)
   const { isBookmarked, toggleBookmark } = useBookmarks()
   const { toast } = useToast()
 
@@ -45,6 +47,22 @@ export function VitabuGrid({ books }: VitabuGridProps) {
 
   const handleShare = async (book: Book) => {
     await shareContent(book.title, `${book.title} na ${book.author}\n\n${book.description}`)
+  }
+
+  const handleDownload = async (book: Book) => {
+    if (!book.fileUrl) return
+    setDownloadingId(book.id)
+    try {
+      await downloadFile(book.fileUrl, book.title)
+    } catch (error) {
+      toast({
+        title: "Imeshindikana kupakua",
+        description: error instanceof Error ? error.message : "Tafadhali jaribu tena baadaye.",
+        variant: "destructive",
+      })
+    } finally {
+      setDownloadingId(null)
+    }
   }
 
   return (
@@ -127,10 +145,19 @@ export function VitabuGrid({ books }: VitabuGridProps) {
                 <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleShare(book)}>
                   <Share2 className="h-3.5 w-3.5" />
                 </Button>
-                <Button variant="outline" size="icon" className="h-8 w-8" asChild>
-                  <a href={book.fileUrl ?? "#"} download title="Pakua kitabu">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  title="Pakua kitabu"
+                  disabled={downloadingId === book.id || !book.fileUrl}
+                  onClick={() => handleDownload(book)}
+                >
+                  {downloadingId === book.id ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
                     <Download className="h-3.5 w-3.5" />
-                  </a>
+                  )}
                 </Button>
               </CardFooter>
             </Card>

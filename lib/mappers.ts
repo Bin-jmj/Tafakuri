@@ -111,7 +111,7 @@ export function mapBook(row: Tables["media_items"]["Row"]): Book {
     categories: row.categories,
     language: row.language,
     coverUrl: row.cover_url ?? undefined,
-    fileUrl: row.drive_file_id ? `/api/drive/file/${row.drive_file_id}` : undefined,
+    fileUrl: row.storage_path ? `/api/media/file/${row.id}` : undefined,
     totalPages: row.total_pages ?? undefined,
     publishedYear: row.published_year ?? undefined,
     downloadCount: row.download_count,

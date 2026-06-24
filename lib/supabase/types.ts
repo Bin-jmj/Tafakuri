@@ -166,6 +166,7 @@ export interface Database {
           cover_url: string | null
           drive_file_id: string | null
           drive_mime_type: string | null
+          storage_path: string | null
           file_size_bytes: number | null
           total_pages: number | null
           duration_seconds: number | null

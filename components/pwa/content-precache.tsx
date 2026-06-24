@@ -39,10 +39,14 @@ export function ContentPrecache() {
     }
 
     navigator.serviceWorker.addEventListener("message", handleMessage)
-    checkAndPrecache()
+    // Delay so this background sweep never competes with whatever the user
+    // is doing in the first moments after opening the app (e.g. reading or
+    // downloading a book) for a connection slot.
+    const timer = setTimeout(checkAndPrecache, 5000)
 
     return () => {
       active = false
+      clearTimeout(timer)
       navigator.serviceWorker.removeEventListener("message", handleMessage)
     }
   }, [])

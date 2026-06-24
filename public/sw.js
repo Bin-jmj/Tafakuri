@@ -6,7 +6,9 @@ const SHELL_CACHE = `tafakuri-shell-${CACHE_VERSION}`
 const PAGES_CACHE = `tafakuri-pages-${CACHE_VERSION}`
 const RSC_CACHE = `tafakuri-rsc-${CACHE_VERSION}`
 const ASSETS_CACHE = `tafakuri-assets-${CACHE_VERSION}`
-const BOOKS_CACHE = `tafakuri-books-${CACHE_VERSION}`
+// Not versioned: downloaded books are large user files that should survive
+// app updates - bumping CACHE_VERSION must never wipe them.
+const BOOKS_CACHE = "tafakuri-books"
 
 const CURRENT_CACHES = [SHELL_CACHE, PAGES_CACHE, RSC_CACHE, ASSETS_CACHE, BOOKS_CACHE]
 
@@ -40,13 +42,23 @@ self.addEventListener("activate", (event) => {
 // /api/content-version reports a version newer than what's already cached.
 // Vitabu (books/audio/video) is intentionally excluded - those are real
 // files downloaded on demand, not bundled wholesale.
+let activePrecache = null
+
 self.addEventListener("message", (event) => {
   if (event.data?.type === "PRECACHE_CONTENT") {
-    event.waitUntil(precacheContent())
+    if (!activePrecache) {
+      activePrecache = precacheContent().finally(() => {
+        activePrecache = null
+      })
+    }
+    event.waitUntil(activePrecache)
   }
 })
 
-const PRECACHE_CONCURRENCY = 6
+// Kept low (not the per-origin connection-limit ceiling) so a background
+// precache sweep never starves a real foreground request - e.g. opening a
+// book - of a connection slot.
+const PRECACHE_CONCURRENCY = 3
 
 async function notifyClients(message) {
   const clients = await self.clients.matchAll()

@@ -12,9 +12,17 @@ export function useCmsResource<T extends { id: string }>(resource: string, pageS
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [search, setSearch] = useState("")
+  const [search, setSearchState] = useState("")
   const [filters, setFilters] = useState<Record<string, string>>({})
   const [page, setPage] = useState(1)
+
+  // Reset to page 1 in the same state update as the search/filter change
+  // itself (React batches these), so `reload` only ever sees the new page
+  // and new filters together - never an intermediate stale-page fetch.
+  const setSearch = useCallback((value: string) => {
+    setSearchState(value)
+    setPage(1)
+  }, [])
 
   const setFilter = useCallback((key: string, value: string) => {
     setFilters((prev) => {
@@ -26,12 +34,8 @@ export function useCmsResource<T extends { id: string }>(resource: string, pageS
       }
       return { ...prev, [key]: value }
     })
-  }, [])
-
-  // Any change to search or filters invalidates whatever page we were on.
-  useEffect(() => {
     setPage(1)
-  }, [search, filters])
+  }, [])
 
   const reload = useCallback(async () => {
     setLoading(true)
@@ -45,8 +49,14 @@ export function useCmsResource<T extends { id: string }>(resource: string, pageS
       const res = await fetch(`/api/admin/${resource}?${params.toString()}`)
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? "Imeshindikana kupakia data")
+      const newTotal = json.count ?? 0
       setData(json.data ?? [])
-      setTotal(json.count ?? 0)
+      setTotal(newTotal)
+      // A mutation (e.g. deleting the last row on the last page) can shrink
+      // total below the current page - clamp back to the last valid page
+      // instead of showing an empty table while data exists on earlier pages.
+      const maxPage = Math.max(1, Math.ceil(newTotal / pageSize))
+      if (page > maxPage) setPage(maxPage)
     } catch (e) {
       setError(e instanceof Error ? e.message : "Hitilafu imetokea")
     } finally {

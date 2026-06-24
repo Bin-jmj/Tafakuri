@@ -71,4 +71,6 @@ export interface CmsResourceConfig {
   extraFilters?: CmsExtraFilter[]
   /** Optional per-row link shown before Edit/Delete (e.g. "Manage content" for occasions). */
   rowLink?: (row: Record<string, unknown> & { id: string }) => { href: string; label: string }
+  /** Rows per page for the admin table. Defaults to 20. */
+  pageSize?: number
 }

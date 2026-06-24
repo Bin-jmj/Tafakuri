@@ -11,6 +11,16 @@ export interface Database {
   }
   public: {
     Tables: {
+      content_meta: {
+        Row: {
+          id: number
+          version: number
+          updated_at: string
+        }
+        Insert: Partial<Database["public"]["Tables"]["content_meta"]["Row"]>
+        Update: Partial<Database["public"]["Tables"]["content_meta"]["Row"]>
+        Relationships: []
+      }
       profiles: {
         Row: {
           id: string

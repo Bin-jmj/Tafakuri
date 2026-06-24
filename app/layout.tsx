@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register"
 import { InstallBanner } from "@/components/pwa/install-banner"
+import { ContentPrecache } from "@/components/pwa/content-precache"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AutoTheme } from "@/components/auto-theme"
 import { createClient } from "@/lib/supabase/server"
@@ -73,6 +74,7 @@ export default async function RootLayout({
           <Toaster />
           <Analytics />
           <ServiceWorkerRegister />
+          <ContentPrecache />
           <InstallBanner />
         </ThemeProvider>
       </body>

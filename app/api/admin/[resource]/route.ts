@@ -14,9 +14,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ reso
 
   const { searchParams } = new URL(request.url)
   const search = searchParams.get("q")?.trim()
+  const page = Math.max(1, Number(searchParams.get("page")) || 1)
+  const pageSize = Math.max(1, Math.min(200, Number(searchParams.get("pageSize")) || config.pageSize || 20))
 
   const supabase = createServiceClient()
-  let query = supabase.from(config.table).select("*")
+  let query = supabase.from(config.table).select("*", { count: "exact" })
 
   if (config.filter) {
     for (const [column, value] of Object.entries(config.filter)) {
@@ -44,11 +46,24 @@ export async function GET(request: Request, { params }: { params: Promise<{ reso
     }
   }
 
+  // Multi-select fields (e.g. categories) double as list filters automatically —
+  // a query param matching the field name narrows to rows containing that value.
+  for (const field of config.fields) {
+    if (field.type === "multi-select") {
+      const value = searchParams.get(field.name)
+      if (value) query = query.contains(field.name, [value])
+    }
+  }
+
   query = query.order(config.orderBy.column, { ascending: config.orderBy.ascending })
 
-  const { data, error } = await query
+  const from = (page - 1) * pageSize
+  const to = from + pageSize - 1
+  query = query.range(from, to)
+
+  const { data, error, count } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ data })
+  return NextResponse.json({ data, count: count ?? 0 })
 }
 
 // POST /api/admin/[resource] — create a new row.

@@ -19,8 +19,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
-import { Pencil, Trash2, Inbox } from "lucide-react"
+import { Pencil, Trash2, Inbox, ChevronLeft, ChevronRight } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { useCmsResource } from "@/hooks/use-cms-resource"
 import type { CmsField, CmsFieldOption, CmsResourceConfig } from "@/lib/cms/types"
@@ -29,7 +30,8 @@ type Row = Record<string, unknown> & { id: string }
 
 export function CmsResourcePage({ config }: { config: CmsResourceConfig }) {
   const { toast } = useToast()
-  const { data, loading, error, setSearch, filters, setFilter, create, update, remove } = useCmsResource<Row>(config.key)
+  const { data, total, page, setPage, pageSize, loading, error, setSearch, filters, setFilter, create, update, remove } =
+    useCmsResource<Row>(config.key, config.pageSize)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Row | null>(null)
   const [form, setForm] = useState<Record<string, unknown>>(config.defaultValues)
@@ -92,21 +94,42 @@ export function CmsResourcePage({ config }: { config: CmsResourceConfig }) {
   }
 
   const tableFields = config.fields.filter((f) => f.showInTable && f.name !== config.primaryColumn)
+  const categoryFilterFields = config.fields.filter((f) => f.type === "multi-select" && f.optionsKey)
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
   return (
     <>
       <CmsPageShell
         title={config.titlePlural}
         description={config.description}
-        count={data.length}
+        count={total}
         searchPlaceholder={config.searchPlaceholder}
         onSearch={setSearch}
         onAdd={openAdd}
         addLabel={config.addLabel}
       >
-        {config.extraFilters && config.extraFilters.length > 0 && (
+        {(categoryFilterFields.length > 0 || (config.extraFilters && config.extraFilters.length > 0)) && (
           <div className="flex flex-wrap items-end gap-3">
-            {config.extraFilters.map((filter) =>
+            {categoryFilterFields.map((field) => (
+              <div key={field.name} className="space-y-1">
+                <label className="text-xs text-muted-foreground">{field.label}</label>
+                <Select
+                  value={filters[field.name] ?? "all"}
+                  onValueChange={(v) => setFilter(field.name, v === "all" ? "" : v)}
+                >
+                  <SelectTrigger className="h-9 w-48">
+                    <SelectValue placeholder={`Chuja kwa ${field.label}`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Zote</SelectItem>
+                    {(dynamicOptions[field.optionsKey ?? ""] ?? []).map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ))}
+            {config.extraFilters?.map((filter) =>
               filter.type === "number" ? (
                 <div key={filter.name} className="space-y-1">
                   <label className="text-xs text-muted-foreground">{filter.label}</label>
@@ -160,6 +183,7 @@ export function CmsResourcePage({ config }: { config: CmsResourceConfig }) {
             <p>Hakuna rekodi zilizopatikana</p>
           </div>
         ) : (
+          <>
           <Card className="border-border/50">
             <CardContent className="p-0">
               <div className="overflow-x-auto">
@@ -215,6 +239,28 @@ export function CmsResourcePage({ config }: { config: CmsResourceConfig }) {
               </div>
             </CardContent>
           </Card>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-1">
+              <p className="text-xs text-muted-foreground">
+                Inaonyesha {(page - 1) * pageSize + 1}–{Math.min(page * pageSize, total)} ya {total}
+              </p>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="gap-1" disabled={page <= 1} onClick={() => setPage(page - 1)}>
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                  Iliyotangulia
+                </Button>
+                <span className="text-xs text-muted-foreground px-1 tabular-nums">
+                  Ukurasa {page} / {totalPages}
+                </span>
+                <Button variant="outline" size="sm" className="gap-1" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>
+                  Inayofuata
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
+          )}
+          </>
         )}
       </CmsPageShell>
 

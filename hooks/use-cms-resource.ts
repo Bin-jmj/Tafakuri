@@ -7,12 +7,14 @@ import { useCallback, useEffect, useState } from "react"
  * /api/admin/[resource] and /api/admin/[resource]/[id], which validate
  * against the resource's config in lib/cms/resources.ts.
  */
-export function useCmsResource<T extends { id: string }>(resource: string) {
+export function useCmsResource<T extends { id: string }>(resource: string, pageSize = 20) {
   const [data, setData] = useState<T[]>([])
+  const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState("")
   const [filters, setFilters] = useState<Record<string, string>>({})
+  const [page, setPage] = useState(1)
 
   const setFilter = useCallback((key: string, value: string) => {
     setFilters((prev) => {
@@ -26,6 +28,11 @@ export function useCmsResource<T extends { id: string }>(resource: string) {
     })
   }, [])
 
+  // Any change to search or filters invalidates whatever page we were on.
+  useEffect(() => {
+    setPage(1)
+  }, [search, filters])
+
   const reload = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -33,17 +40,19 @@ export function useCmsResource<T extends { id: string }>(resource: string) {
       const params = new URLSearchParams()
       if (search) params.set("q", search)
       for (const [key, value] of Object.entries(filters)) params.set(key, value)
-      const qs = params.toString() ? `?${params.toString()}` : ""
-      const res = await fetch(`/api/admin/${resource}${qs}`)
+      params.set("page", String(page))
+      params.set("pageSize", String(pageSize))
+      const res = await fetch(`/api/admin/${resource}?${params.toString()}`)
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? "Imeshindikana kupakia data")
       setData(json.data ?? [])
+      setTotal(json.count ?? 0)
     } catch (e) {
       setError(e instanceof Error ? e.message : "Hitilafu imetokea")
     } finally {
       setLoading(false)
     }
-  }, [resource, search, filters])
+  }, [resource, search, filters, page, pageSize])
 
   useEffect(() => {
     reload()
@@ -91,5 +100,21 @@ export function useCmsResource<T extends { id: string }>(resource: string) {
     [resource, reload],
   )
 
-  return { data, loading, error, search, setSearch, filters, setFilter, create, update, remove, reload }
+  return {
+    data,
+    total,
+    page,
+    setPage,
+    pageSize,
+    loading,
+    error,
+    search,
+    setSearch,
+    filters,
+    setFilter,
+    create,
+    update,
+    remove,
+    reload,
+  }
 }

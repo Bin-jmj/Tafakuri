@@ -124,15 +124,15 @@ export function PdfReader({ fileUrl, bookId }: PdfReaderProps) {
     renderPage(pageNum, scale)
   }, [status, restored, pageNum, scale, renderPage])
 
-  // Persist progress whenever the page changes
+  // Persist progress whenever the page changes (locally, synced when signed in)
   useEffect(() => {
-    if (!signedIn || status !== "ready" || !restored || numPages === 0) return
+    if (status !== "ready" || !restored || numPages === 0) return
     saveProgress({
       progressPercent: Math.round((pageNum / numPages) * 100),
       currentPage: pageNum,
       totalPages: numPages,
     })
-  }, [pageNum, numPages, signedIn, status, restored, saveProgress])
+  }, [pageNum, numPages, status, restored, saveProgress])
 
   // Keep the page-jump input in sync with the current page
   useEffect(() => {
@@ -226,7 +226,7 @@ export function PdfReader({ fileUrl, bookId }: PdfReaderProps) {
 
       {!signedIn && (
         <p className="text-xs text-muted-foreground text-center">
-          Ingia kwenye akaunti yako ili maendeleo yako ya kusoma yahifadhiwe.
+          Maendeleo yako yanahifadhiwa kwenye kifaa hiki. Ingia ili yahifadhiwe pia kwenye akaunti yako.
         </p>
       )}
     </div>

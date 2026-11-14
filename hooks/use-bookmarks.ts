@@ -3,9 +3,22 @@
 import { useCallback, useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { useToast } from "@/hooks/use-toast"
+import {
+  ANON_SCOPE,
+  bookmarkRecordKey,
+  getDB,
+  type BookmarkContentType,
+} from "@/lib/offline/db"
+import { enqueueOutbox, flushOutbox, pullUserContent } from "@/lib/offline/sync"
 
-export type BookmarkContentType = "quran_verse" | "hadith" | "dua" | "adhkar" | "article" | "media"
+export type { BookmarkContentType } from "@/lib/offline/db"
 
+/**
+ * Offline-first bookmarks. Local truth lives in IndexedDB; every mutation
+ * is queued in the outbox and replayed to Supabase when online and signed
+ * in. Anonymous bookmarks stay local and are merged into the account on
+ * sign-in (see lib/offline/sync.ts#mergeAnonBookmarks).
+ */
 export function useBookmarks() {
   const [supabase] = useState(() => createClient())
   const { toast } = useToast()
@@ -13,28 +26,39 @@ export function useBookmarks() {
   const [userId, setUserId] = useState<string | null>(null)
   const [loaded, setLoaded] = useState(false)
 
+  const scope = userId ?? ANON_SCOPE
+
+  const reload = useCallback(async (scopeValue: string) => {
+    const db = await getDB()
+    const records = await db.getAllFromIndex("bookmarks", "by_user", scopeValue)
+    return new Set(records.filter((r) => !r.deleted).map((r) => `${r.contentType}:${r.contentId}`))
+  }, [])
+
   useEffect(() => {
     let active = true
     ;(async () => {
-      const { data } = await supabase.auth.getUser()
-      const user = data.user
-      if (!active) return
-      setUserId(user?.id ?? null)
-      if (user) {
-        const { data: rows } = await supabase
-          .from("bookmarks")
-          .select("content_type, content_id")
-          .eq("user_id", user.id)
-        if (active && rows) {
-          setBookmarks(new Set(rows.map((r) => `${r.content_type}:${r.content_id}`)))
+      try {
+        const { data } = await supabase.auth.getUser()
+        const uid = data.user?.id ?? null
+        if (!active) return
+        setUserId(uid)
+        setBookmarks(await reload(uid ?? ANON_SCOPE))
+        if (uid && navigator.onLine) {
+          // Refresh from the server in the background; local unsynced
+          // records win until they are flushed (see lib/offline/sync.ts).
+          await pullUserContent(uid)
+          if (active) setBookmarks(await reload(uid))
+          void flushOutbox(uid)
         }
+      } catch {
+        // No IndexedDB (private mode / unsupported) - empty local state.
       }
       if (active) setLoaded(true)
     })()
     return () => {
       active = false
     }
-  }, [supabase])
+  }, [supabase, reload])
 
   const isBookmarked = useCallback(
     (type: BookmarkContentType, id: string) => bookmarks.has(`${type}:${id}`),
@@ -43,39 +67,48 @@ export function useBookmarks() {
 
   const toggleBookmark = useCallback(
     async (type: BookmarkContentType, id: string): Promise<boolean> => {
-      if (!userId) {
+      let next: Set<string>
+      try {
+        const db = await getDB()
+        const key = `${type}:${id}`
+        const recordKey = bookmarkRecordKey(scope, type, id)
+        const existing = await db.get("bookmarks", recordKey)
+        const removing = !!existing && !existing.deleted
+
+        await db.put("bookmarks", {
+          key: recordKey,
+          userId: scope,
+          contentType: type,
+          contentId: id,
+          synced: false,
+          deleted: removing,
+          updatedAt: Date.now(),
+        })
+        await enqueueOutbox(db, "bookmark", removing ? "delete" : "upsert", {
+          content_type: type,
+          content_id: id,
+        })
+
+        next = new Set(bookmarks)
+        if (removing) next.delete(key)
+        else next.add(key)
+        setBookmarks(next)
+
+        if (userId && navigator.onLine) {
+          await flushOutbox(userId)
+          setBookmarks(await reload(scope))
+        }
+        return true
+      } catch {
         toast({
-          title: "Tafadhali ingia",
-          description: "Unahitaji kuingia kwenye akaunti yako kuweka alama.",
+          title: "Imeshindikana kuhifadhi",
+          description: "Hifadhi ya kifaa haiwapatikani kwa sasa.",
           variant: "destructive",
         })
         return false
       }
-
-      const key = `${type}:${id}`
-      if (bookmarks.has(key)) {
-        const { error } = await supabase
-          .from("bookmarks")
-          .delete()
-          .eq("user_id", userId)
-          .eq("content_type", type)
-          .eq("content_id", id)
-        if (error) return false
-        setBookmarks((prev) => {
-          const next = new Set(prev)
-          next.delete(key)
-          return next
-        })
-      } else {
-        const { error } = await supabase
-          .from("bookmarks")
-          .insert({ user_id: userId, content_type: type, content_id: id })
-        if (error) return false
-        setBookmarks((prev) => new Set(prev).add(key))
-      }
-      return true
     },
-    [bookmarks, userId, supabase, toast],
+    [bookmarks, scope, userId, reload, supabase, toast],
   )
 
   return { isBookmarked, toggleBookmark, loaded, signedIn: !!userId }

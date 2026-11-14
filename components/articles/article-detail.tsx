@@ -40,7 +40,7 @@ const WORDS_PER_MINUTE = 200
 
 export function ArticleDetail({ article, prevArticle, nextArticle, recommendedBooks }: ArticleDetailProps) {
   const { isBookmarked, toggleBookmark } = useBookmarks()
-  const { progress: savedProgress, loaded: progressLoaded, signedIn, saveProgress } = useReadingProgress("article", article.id)
+  const { progress: savedProgress, loaded: progressLoaded, saveProgress } = useReadingProgress("article", article.id)
   const { toast } = useToast()
   const [progress, setProgress] = useState(0)
   const [downloading, setDownloading] = useState(false)
@@ -74,7 +74,7 @@ export function ArticleDetail({ article, prevArticle, nextArticle, recommendedBo
       const pct = total <= 0 ? 100 : Math.min(100, Math.max(0, (-rect.top / total) * 100))
       setProgress(pct)
 
-      if (!signedIn) return
+      if (!progressLoaded) return
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
       saveTimerRef.current = setTimeout(() => {
         saveProgress({ progressPercent: Math.round(pct) })
@@ -86,7 +86,7 @@ export function ArticleDetail({ article, prevArticle, nextArticle, recommendedBo
       window.removeEventListener("scroll", handleScroll)
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     }
-  }, [signedIn, saveProgress])
+  }, [progressLoaded, saveProgress])
 
   const handleBookmark = async () => {
     const wasBookmarked = bookmarked

@@ -9,8 +9,10 @@ const VERSION_KEY = "tafakuri_content_version"
  * fresh. On each load, compares /api/content-version against the version we
  * last finished precaching (stored in localStorage) and asks the service
  * worker to re-fetch everything when admin has added, edited, or removed
- * any of that content since. No-op when there's no service worker yet, or
- * when offline (silently retries on the next online visit).
+ * any of that content since. Also hydrates the same core content into
+ * IndexedDB (lib/offline) for structured offline reads. No-op when there's
+ * no service worker yet, or when offline (silently retries on the next
+ * online visit).
  */
 export function ContentPrecache() {
   useEffect(() => {
@@ -20,6 +22,9 @@ export function ContentPrecache() {
     function handleMessage(event: MessageEvent) {
       if (event.data?.type === "PRECACHE_DONE" && typeof event.data.version !== "undefined") {
         localStorage.setItem(VERSION_KEY, String(event.data.version))
+        // Ask the browser to exempt this origin from automatic storage
+        // eviction so the offline bundle and IndexedDB data survive.
+        void navigator.storage?.persist?.()
       }
     }
 
@@ -28,7 +33,13 @@ export function ContentPrecache() {
         const res = await fetch("/api/content-version")
         if (!res.ok || !active) return
         const { version } = await res.json()
-        if (localStorage.getItem(VERSION_KEY) === String(version)) return
+        const stale = localStorage.getItem(VERSION_KEY) !== String(version)
+
+        // Hydrate structured content into IndexedDB whenever the version
+        // changed (syncCoreContent re-checks and writes only when needed).
+        void import("@/lib/offline/sync").then(({ syncCoreContent }) => syncCoreContent())
+
+        if (!stale) return
 
         const registration = await navigator.serviceWorker.ready
         if (!active || !registration.active) return

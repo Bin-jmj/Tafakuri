@@ -9,6 +9,7 @@ import { BottomNav } from "@/components/layout/bottom-nav"
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register"
 import { InstallBanner } from "@/components/pwa/install-banner"
 import { ContentPrecache } from "@/components/pwa/content-precache"
+import { OfflineSync } from "@/components/pwa/offline-sync"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AutoTheme } from "@/components/auto-theme"
 import { createClient } from "@/lib/supabase/server"
@@ -80,6 +81,7 @@ export default async function RootLayout({
           <Analytics />
           <ServiceWorkerRegister />
           <ContentPrecache />
+          <OfflineSync />
           <InstallBanner />
         </ThemeProvider>
       </body>

@@ -122,4 +122,29 @@
   body {
     @apply bg-background text-foreground;
   }
+  html {
+    /* Native-app feel: no grey flash boxes on tap on mobile WebKit. */
+    -webkit-tap-highlight-color: transparent;
+  }
+  a,
+  button {
+    /* Prevent double-tap zoom delays on interactive elements. */
+    touch-action: manipulation;
+  }
+}
+
+/* Safe-area helpers for standalone PWA mode (viewport-fit: cover). */
+@layer utilities {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  /* Reserve room above the fixed bottom navigation (h-16 + home bar). */
+  .pb-nav-safe {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 1024px) {
+    .pb-nav-safe {
+      padding-bottom: 0;
+    }
+  }
 }

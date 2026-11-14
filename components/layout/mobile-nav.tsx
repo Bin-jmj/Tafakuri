@@ -8,7 +8,7 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { BookOpen, Clock, FileText, Home, Library, LogIn, LogOut, Menu, Moon, Scroll, Search, Sparkles, Sun, User, HandHeart } from "lucide-react"
+import { BookOpen, Clock, FileText, Headphones, Home, Library, LogIn, LogOut, Menu, Moon, Scroll, Search, Sparkles, Sun, User, HandHeart, Video } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNextPrayer } from "@/hooks/use-next-prayer"
 import { useUser } from "@/hooks/use-user"
@@ -22,13 +22,29 @@ const navItems = [
   { href: "/dua", label: "Dua", icon: HandHeart },
   { href: "/adhkar", label: "Adhkar", icon: Sparkles },
   { href: "/vitabu", label: "Vitabu", icon: Library },
+  { href: "/sauti", label: "Sauti", icon: Headphones },
+  { href: "/video", label: "Video", icon: Video },
   { href: "/articles", label: "Makala", icon: FileText },
   { href: "/search", label: "Tafuta", icon: Search },
   { href: "/profile", label: "Alama", icon: User },
 ]
 
-export function MobileNav({ prayerOffsets = ZERO_PRAYER_OFFSETS }: { prayerOffsets?: PrayerOffsets }) {
-  const [open, setOpen] = useState(false)
+export function MobileNav({
+  prayerOffsets = ZERO_PRAYER_OFFSETS,
+  open: controlledOpen,
+  onOpenChange,
+  hideTrigger = false,
+}: {
+  prayerOffsets?: PrayerOffsets
+  /** Controlled open state (e.g. driven by the bottom nav's "Zaidi" tab). */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  /** Hide the hamburger trigger when another control owns opening the sheet. */
+  hideTrigger?: boolean
+}) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen ?? internalOpen
+  const setOpen = onOpenChange ?? setInternalOpen
   const pathname = usePathname()
   const nextPrayer = useNextPrayer(prayerOffsets)
   const { resolvedTheme, setTheme } = useTheme()
@@ -40,12 +56,14 @@ export function MobileNav({ prayerOffsets = ZERO_PRAYER_OFFSETS }: { prayerOffse
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="lg:hidden">
-          <Menu className="h-6 w-6" />
-          <span className="sr-only">Fungua menyu</span>
-        </Button>
-      </SheetTrigger>
+      {!hideTrigger && (
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="lg:hidden">
+            <Menu className="h-6 w-6" />
+            <span className="sr-only">Fungua menyu</span>
+          </Button>
+        </SheetTrigger>
+      )}
       <SheetContent side="left" className="w-64 overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="text-left">

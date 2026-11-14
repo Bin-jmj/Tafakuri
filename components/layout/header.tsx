@@ -7,7 +7,13 @@ import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { MobileNav } from "./mobile-nav"
-import { BookOpen, Clock, FileText, Home, Library, LogIn, LogOut, Moon, Scroll, Search, Sparkles, Sun, User, HandHeart, Settings2 } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { BookOpen, ChevronDown, Clock, FileText, Headphones, Home, Library, LogIn, LogOut, Moon, Scroll, Search, Sparkles, Sun, User, HandHeart, Settings2, Video } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNextPrayer } from "@/hooks/use-next-prayer"
 import { useUser } from "@/hooks/use-user"
@@ -21,8 +27,13 @@ const navItems = [
   { href: "/dua", label: "Dua", icon: HandHeart },
   { href: "/adhkar", label: "Adhkar", icon: Sparkles },
   { href: "/vitabu", label: "Vitabu", icon: Library },
-  { href: "/articles", label: "Makala", icon: FileText },
   { href: "/profile", label: "Alama", icon: User },
+]
+
+const moreNavItems = [
+  { href: "/sauti", label: "Sauti", icon: Headphones },
+  { href: "/video", label: "Video", icon: Video },
+  { href: "/articles", label: "Makala", icon: FileText },
 ]
 
 export function Header({ prayerOffsets = ZERO_PRAYER_OFFSETS }: { prayerOffsets?: PrayerOffsets }) {
@@ -36,7 +47,7 @@ export function Header({ prayerOffsets = ZERO_PRAYER_OFFSETS }: { prayerOffsets?
   const showLogout = mounted && !userLoading && !!user
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 pt-safe backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center gap-3 px-4">
         <MobileNav prayerOffsets={prayerOffsets} />
 
@@ -62,6 +73,7 @@ export function Header({ prayerOffsets = ZERO_PRAYER_OFFSETS }: { prayerOffsets?
           {navItems.map((item) => {
             const isLoginSlot = item.href === "/profile" && showLogin
             const isLogoutSlot = item.href === "/profile" && showLogout
+            const isMoreActive = moreNavItems.some((m) => pathname.startsWith(m.href))
 
             if (isLogoutSlot) {
               return (
@@ -79,16 +91,42 @@ export function Header({ prayerOffsets = ZERO_PRAYER_OFFSETS }: { prayerOffsets?
             const href = isLoginSlot ? "/auth/login" : item.href
             const isActive = !isLoginSlot && (pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href)))
 
+            // The "Zaidi" dropdown sits right before the profile/login slot.
             return (
-              <Link key={item.href} href={href}>
-                <Button
-                  variant="ghost"
-                  className={cn("gap-2", isActive && "bg-muted text-primary font-medium")}
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </Button>
-              </Link>
+              <div key={item.href} className="contents">
+                {item.href === "/profile" && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className={cn("gap-1.5", isMoreActive && "bg-muted text-primary font-medium")}
+                      >
+                        Zaidi
+                        <ChevronDown className="h-3.5 w-3.5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {moreNavItems.map((m) => (
+                        <DropdownMenuItem key={m.href} asChild>
+                          <Link href={m.href} className="gap-2">
+                            <m.icon className="h-4 w-4" />
+                            {m.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+                <Link href={href}>
+                  <Button
+                    variant="ghost"
+                    className={cn("gap-2", isActive && "bg-muted text-primary font-medium")}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </Button>
+                </Link>
+              </div>
             )
           })}
           <Button

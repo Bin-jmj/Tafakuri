@@ -53,7 +53,7 @@ export function InstallBanner() {
   const isIOS = installState === "ios"
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-80 z-50">
+    <div className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] left-4 right-4 z-50 md:bottom-4 md:left-auto md:right-4 md:w-80">
       <Card className="p-4 shadow-xl border-primary/20 bg-background">
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary flex-shrink-0">

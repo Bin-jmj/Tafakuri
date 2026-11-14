@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/toaster"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
+import { BottomNav } from "@/components/layout/bottom-nav"
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register"
 import { InstallBanner } from "@/components/pwa/install-banner"
 import { ContentPrecache } from "@/components/pwa/content-precache"
@@ -51,6 +52,9 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#0f766e",
+  // Extend the app into the notch/home-bar area in standalone PWA mode;
+  // layout components pad themselves with env(safe-area-inset-*).
+  viewportFit: "cover",
 }
 
 export default async function RootLayout({
@@ -65,13 +69,14 @@ export default async function RootLayout({
 
   return (
     <html lang="sw" dir="ltr" translate="no" suppressHydrationWarning>
-      <body className={`${geist.variable} ${amiri.variable} font-sans antialiased`}>
+      <body className={`${geist.variable} ${amiri.variable} font-sans antialiased pb-nav-safe`}>
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
           <AutoTheme sunrise={settings.sunriseTime} sunset={settings.sunsetTime} />
           <Header prayerOffsets={prayerOffsets} />
-          <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+          <main className="min-h-[calc(100dvh-4rem)]">{children}</main>
           <Footer />
           <Toaster />
+          <BottomNav prayerOffsets={prayerOffsets} />
           <Analytics />
           <ServiceWorkerRegister />
           <ContentPrecache />

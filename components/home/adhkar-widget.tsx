@@ -5,17 +5,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Bookmark, BookmarkCheck, Copy, Image as ImageIcon, Share2, Sparkles, Sun, Moon, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
+import { Bookmark, BookmarkCheck, Copy, Share2, Sparkles, Sun, Moon, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
 import Link from "next/link"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { CopyActionsSheet } from "@/components/ui/copy-actions-sheet"
 import { useToast } from "@/hooks/use-toast"
 import { useBookmarks } from "@/hooks/use-bookmarks"
 import { createClient } from "@/lib/supabase/client"
@@ -258,34 +250,18 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
                   {bookmarked ? <BookmarkCheck className="h-3.5 w-3.5 sm:mr-1 text-primary" /> : <Bookmark className="h-3.5 w-3.5 sm:mr-1" />}
                   <span className="hidden sm:inline">Hifadhi</span>
                 </Button>
-                <Dialog>
-                  <DialogTrigger asChild>
+                <CopyActionsSheet
+                  trigger={
                     <Button variant="outline" size="sm" disabled={downloading} className="bg-transparent text-xs px-1">
                       <Copy className="h-3.5 w-3.5 sm:mr-1" />
                       <span className="hidden sm:inline">Nakili</span>
                     </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-xs">
-                    <DialogHeader>
-                      <DialogTitle>Nakili</DialogTitle>
-                      <DialogDescription>Chagua unavyotaka kuhifadhi au kushiriki adhkar hii.</DialogDescription>
-                    </DialogHeader>
-                    <div className="grid grid-cols-2 gap-2">
-                      <DialogClose asChild>
-                        <Button variant="outline" onClick={handleDownload} disabled={downloading}>
-                          <ImageIcon className="mr-1.5 h-4 w-4" />
-                          Pakua
-                        </Button>
-                      </DialogClose>
-                      <DialogClose asChild>
-                        <Button variant="outline" onClick={handleCopy}>
-                          <Copy className="mr-1.5 h-4 w-4" />
-                          Nakili
-                        </Button>
-                      </DialogClose>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                  }
+                  description="Chagua unavyotaka kuhifadhi au kushiriki adhkar hii."
+                  onCopy={handleCopy}
+                  onDownload={handleDownload}
+                  downloading={downloading}
+                />
                 <Button variant="outline" size="sm" onClick={handleShare} className="bg-transparent text-xs px-1">
                   <Share2 className="h-3.5 w-3.5 sm:mr-1" />
                   <span className="hidden sm:inline">Shiriki</span>

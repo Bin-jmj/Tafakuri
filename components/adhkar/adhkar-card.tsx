@@ -3,16 +3,8 @@
 import { useCallback, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Bookmark, BookmarkCheck, Copy, Image as ImageIcon, Share2 } from "lucide-react"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { Bookmark, BookmarkCheck, Copy, Share2 } from "lucide-react"
+import { CopyActionsSheet } from "@/components/ui/copy-actions-sheet"
 import { useBookmarks } from "@/hooks/use-bookmarks"
 import { useToast } from "@/hooks/use-toast"
 import { copyToClipboard, shareContent } from "@/lib/utils/share"
@@ -113,34 +105,18 @@ export function AdhkarCard({ adhkar }: AdhkarCardProps) {
         )}
 
         <div className="flex items-center gap-3 mt-5">
-          <Dialog>
-            <DialogTrigger asChild>
+          <CopyActionsSheet
+            trigger={
               <Button variant="outline" size="sm" disabled={downloading} className="flex-1 bg-transparent">
                 <Copy className="mr-2 h-4 w-4" />
                 Nakili
               </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-xs">
-              <DialogHeader>
-                <DialogTitle>Nakili</DialogTitle>
-                <DialogDescription>Chagua unavyotaka kuhifadhi au kushiriki adhkar hii.</DialogDescription>
-              </DialogHeader>
-              <div className="grid grid-cols-2 gap-2">
-                <DialogClose asChild>
-                  <Button variant="outline" onClick={handleDownload} disabled={downloading}>
-                    <ImageIcon className="mr-1.5 h-4 w-4" />
-                    Pakua
-                  </Button>
-                </DialogClose>
-                <DialogClose asChild>
-                  <Button variant="outline" onClick={handleCopy}>
-                    <Copy className="mr-1.5 h-4 w-4" />
-                    Nakili
-                  </Button>
-                </DialogClose>
-              </div>
-            </DialogContent>
-          </Dialog>
+            }
+            description="Chagua unavyotaka kuhifadhi au kushiriki adhkar hii."
+            onCopy={handleCopy}
+            onDownload={handleDownload}
+            downloading={downloading}
+          />
           <Button variant="outline" size="sm" onClick={handleShare} className="flex-1 bg-transparent">
             <Share2 className="mr-2 h-4 w-4" />
             Shiriki

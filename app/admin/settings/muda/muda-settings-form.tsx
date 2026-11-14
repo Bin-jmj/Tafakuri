@@ -42,7 +42,9 @@ export function MudaSettingsForm({ settings }: { settings: RotationSettings }) {
     isha: settings.prayerOffsetIsha,
   })
 
-  const eatNow = new Date(Date.now() + 3 * 3600 * 1000)
+  // Snapshot of "now +3h" for the prayer-times preview; computed once per
+  // mount so renders stay pure (Date.now() is impure).
+  const [eatNow] = useState(() => new Date(Date.now() + 3 * 3600 * 1000))
   const previewTimes = getPrayerTimes(eatNow.getUTCFullYear(), eatNow.getUTCMonth() + 1, eatNow.getUTCDate(), prayerOffsetPreview)
 
   function handleSubmit(formData: FormData) {

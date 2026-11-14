@@ -102,7 +102,7 @@ export function useReadingProgress(type: ReadingContentType, id: string) {
         setProgress(data)
       }
     },
-    [recordKey, scope, type, id, userId, supabase],
+    [recordKey, scope, type, id, userId],
   )
 
   return { progress, loaded, signedIn: !!userId, saveProgress }

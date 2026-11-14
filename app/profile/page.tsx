@@ -1,4 +1,5 @@
 import { BookmarksList } from "@/components/profile/bookmarks-list"
+import { OfflineStorageCard } from "@/components/profile/offline-storage-card"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function ProfilePage() {
@@ -12,6 +13,10 @@ export default function ProfilePage() {
       </Card>
 
       <BookmarksList />
+
+      <div className="mt-8">
+        <OfflineStorageCard />
+      </div>
     </div>
   )
 }

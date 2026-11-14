@@ -108,8 +108,8 @@ export function useBookmarks() {
         return false
       }
     },
-    [bookmarks, scope, userId, reload, supabase, toast],
+    [bookmarks, scope, userId, reload, toast],
   )
 
-  return { isBookmarked, toggleBookmark, loaded, signedIn: !!userId }
+  return { isBookmarked, toggleBookmark, bookmarks, loaded, signedIn: !!userId }
 }

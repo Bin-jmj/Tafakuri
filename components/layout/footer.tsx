@@ -19,7 +19,7 @@ export function Footer() {
               <span className="font-bold text-lg">Tafakuri</span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Programu ya kusambaza maarifa ya Kiislamu kwa Kiswahili. Soma Qur'ani, Hadith, na Dua za kila siku.
+              Programu ya kusambaza maarifa ya Kiislamu kwa Kiswahili. Soma Qur&apos;ani, Hadith, na Dua za kila siku.
             </p>
             <div className="flex gap-3">
               <Link
@@ -60,7 +60,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/quran" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Qur'ani Tukufu
+                  Qur&apos;ani Tukufu
                 </Link>
               </li>
               <li>

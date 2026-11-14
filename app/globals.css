@@ -73,7 +73,7 @@
 @theme inline {
   --font-sans: "Geist", "Geist Fallback";
   --font-mono: "Geist Mono", "Geist Mono Fallback";
-  --font-arabic: "Amiri", "Traditional Arabic", serif;
+  --font-arabic: var(--font-amiri), "Amiri", "Traditional Arabic", serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -146,5 +146,60 @@
     text-align: right;
     line-height: 2;
     font-size: 1.5rem;
+  }
+
+  /* Native-app feel: no grey flash boxes on tap on mobile WebKit. */
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  a,
+  button {
+    /* Prevent double-tap zoom delays on interactive elements. */
+    touch-action: manipulation;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+  /* Respect the user's reduced-motion preference globally. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Safe-area helpers for standalone PWA mode (viewport-fit: cover). */
+@layer utilities {
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  /* Reserve room above the fixed bottom navigation (h-16 + home bar). */
+  .pb-nav-safe {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 1024px) {
+    .pb-nav-safe {
+      padding-bottom: 0;
+    }
+  }
+}
+
+/* Splash screen logo pulse (reduced-motion is disabled globally above). */
+@keyframes splash-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.9;
   }
 }

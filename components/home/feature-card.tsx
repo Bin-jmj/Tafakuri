@@ -13,8 +13,8 @@ interface FeatureCardProps {
 
 export function FeatureCard({ title, description, icon: Icon, href, gradient }: FeatureCardProps) {
   return (
-    <Link href={href} className="group">
-      <Card className="h-full transition-all hover:shadow-lg hover:border-primary cursor-pointer overflow-hidden">
+    <Link href={href} className="group block outline-none focus-visible:ring-2 focus-visible:ring-ring/50 rounded-xl">
+      <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/40 active:scale-[0.98] cursor-pointer overflow-hidden">
         <div className={`h-2 ${gradient}`} />
         <CardHeader>
           <div className="flex items-center gap-3 mb-2">

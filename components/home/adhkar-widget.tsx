@@ -5,12 +5,14 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Bookmark, BookmarkCheck, Copy, Share2, Sparkles, Sun, Moon, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { CopyActionsSheet } from "@/components/ui/copy-actions-sheet"
 import { useToast } from "@/hooks/use-toast"
 import { useBookmarks } from "@/hooks/use-bookmarks"
 import { createClient } from "@/lib/supabase/client"
+import { getDB } from "@/lib/offline/db"
 import { mapAdhkar } from "@/lib/mappers"
 import type { Adhkar } from "@/lib/types"
 import { copyToClipboard, shareContent } from "@/lib/utils/share"
@@ -37,37 +39,69 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
 
   // Load adhkar — an active occasion's pool (e.g. Ramadhani) takes priority
   // over the normal asubuhi/jioni slot rotation, falling back automatically
-  // whenever no occasion is configured or active.
+  // whenever no occasion is configured or active. When offline, the
+  // IndexedDB adhkar store (synced by ContentPrecache) keeps the widget
+  // working with the last synced content.
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     let active = true
     const supabase = createClient()
 
-    async function load() {
-      const occasion = await getActiveOccasionItemIds(supabase, "adhkar")
-      if (!active) return
-
-      if (occasion) {
-        const { data } = await supabase.from("adhkar").select("*").in("id", occasion.itemIds)
+    async function loadOffline() {
+      try {
+        const db = await getDB()
+        const all = await db.getAll("adhkar")
+        const scoped = all
+          .filter((a) => a.slot === slot)
+          .sort((a, b) => a.order - b.order)
         if (!active) return
-        const byId = new Map((data ?? []).map((row) => [row.id, row]))
-        const ordered = occasion.itemIds.map((id) => byId.get(id)).filter((row): row is NonNullable<typeof row> => !!row)
-        setAdhkarList(ordered.map(mapAdhkar))
+        setAdhkarList(scoped)
         setCurrentIndex(0)
-        setOccasionName(occasion.occasionName)
-        return
+        setOccasionName(null)
+      } catch {
+        // No network and no offline copy - the widget stays skeleton until
+        // a future online visit.
       }
-
-      setOccasionName(null)
-      const { data } = await supabase
-        .from("adhkar")
-        .select("*")
-        .eq("slot", slot)
-        .order("sort_order", { ascending: true })
-      if (!active) return
-      setAdhkarList((data ?? []).map(mapAdhkar))
-      setCurrentIndex(0)
     }
 
+    async function load() {
+      try {
+        const occasion = await getActiveOccasionItemIds(supabase, "adhkar")
+        if (!active) return
+
+        if (occasion) {
+          const { data, error } = await supabase.from("adhkar").select("*").in("id", occasion.itemIds)
+          if (!active) return
+          if (error) throw error
+          const byId = new Map((data ?? []).map((row) => [row.id, row]))
+          const ordered = occasion.itemIds.map((id) => byId.get(id)).filter((row): row is NonNullable<typeof row> => !!row)
+          setAdhkarList(ordered.map(mapAdhkar))
+          setCurrentIndex(0)
+          setOccasionName(occasion.occasionName)
+          setLoading(false)
+          return
+        }
+
+        setOccasionName(null)
+        const { data, error } = await supabase
+          .from("adhkar")
+          .select("*")
+          .eq("slot", slot)
+          .order("sort_order", { ascending: true })
+        if (!active) return
+        if (error) throw error
+        setAdhkarList((data ?? []).map(mapAdhkar))
+        setCurrentIndex(0)
+        setLoading(false)
+      } catch {
+        // Network or storage failure - try the offline copy before giving up.
+        if (!active) return
+        await loadOffline()
+        if (active) setLoading(false)
+      }
+    }
+
+    setLoading(true)
     load()
     return () => {
       active = false
@@ -153,6 +187,38 @@ export function AdhkarWidget({ rotationSettings = DEFAULT_ROTATION_SETTINGS }: A
       setDownloading(false)
     }
   }, [adhkar, slot, occasionName, toast])
+
+  if (loading) {
+    return (
+      <Card className="overflow-hidden border-primary/20 shadow-lg" aria-busy="true">
+        <CardHeader className="pb-3 bg-gradient-to-br from-primary/10 to-primary/5">
+          <Skeleton className="h-6 w-56" />
+          <div className="flex items-center gap-2 mt-2">
+            <Skeleton className="h-7 w-20 rounded-md" />
+            <Skeleton className="h-7 w-20 rounded-md" />
+          </div>
+          <Skeleton className="h-1.5 w-full mt-2 rounded-full" />
+        </CardHeader>
+        <CardContent className="p-5">
+          <div className="grid gap-5 lg:grid-cols-2">
+            <div className="space-y-4">
+              <Skeleton className="mx-auto h-28 w-full max-w-md rounded-xl" />
+              <Skeleton className="h-5 w-3/4" />
+            </div>
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-16 w-full rounded-lg" />
+              <div className="grid grid-cols-3 gap-1.5">
+                <Skeleton className="h-8 rounded-md" />
+                <Skeleton className="h-8 rounded-md" />
+                <Skeleton className="h-8 rounded-md" />
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   if (!adhkar) return null
 

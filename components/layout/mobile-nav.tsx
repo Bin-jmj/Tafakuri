@@ -8,25 +8,38 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { BookOpen, Clock, FileText, Headphones, Home, Library, LogIn, LogOut, Menu, Moon, Scroll, Search, Sparkles, Sun, User, HandHeart, Video } from "lucide-react"
+import { BookOpen, Clock, FileText, Headphones, Library, LogIn, LogOut, Menu, Moon, Scroll, Search, Sparkles, Sun, User, Video } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useNextPrayer } from "@/hooks/use-next-prayer"
 import { useUser } from "@/hooks/use-user"
 import { signOut } from "@/app/auth/actions"
 import { ZERO_PRAYER_OFFSETS, type PrayerOffsets } from "@/lib/utils/prayer-times"
 
-const navItems = [
-  { href: "/", label: "Nyumbani", icon: Home },
-  { href: "/quran", label: "Qur'ani", icon: BookOpen },
-  { href: "/hadith", label: "Hadith", icon: Scroll },
-  { href: "/dua", label: "Dua", icon: HandHeart },
-  { href: "/adhkar", label: "Adhkar", icon: Sparkles },
-  { href: "/vitabu", label: "Vitabu", icon: Library },
-  { href: "/sauti", label: "Sauti", icon: Headphones },
-  { href: "/video", label: "Video", icon: Video },
-  { href: "/articles", label: "Makala", icon: FileText },
-  { href: "/search", label: "Tafuta", icon: Search },
-  { href: "/profile", label: "Alama", icon: User },
+const contentSections = [
+  {
+    heading: "Qur'ani na Sunnah",
+    items: [
+      { href: "/quran", label: "Qur'ani", icon: BookOpen },
+      { href: "/hadith", label: "Hadith", icon: Scroll },
+      { href: "/adhkar", label: "Adhkar", icon: Sparkles },
+    ],
+  },
+  {
+    heading: "Maudhui",
+    items: [
+      { href: "/vitabu", label: "Vitabu", icon: Library },
+      { href: "/sauti", label: "Sauti", icon: Headphones },
+      { href: "/video", label: "Video", icon: Video },
+      { href: "/articles", label: "Makala", icon: FileText },
+    ],
+  },
+  {
+    heading: "Vifaa",
+    items: [
+      { href: "/search", label: "Tafuta", icon: Search },
+      { href: "/profile", label: "Alama", icon: User },
+    ],
+  },
 ]
 
 export function MobileNav({
@@ -96,39 +109,46 @@ export function MobileNav({
           </div>
         )}
 
-        <nav className="flex flex-col gap-2 mt-6">
-          {navItems.map((item) => {
-            const isLoginSlot = item.href === "/profile" && showLogin
-            const isLogoutSlot = item.href === "/profile" && showLogout
+        <nav className="flex flex-col mt-6" aria-label="Menyu zote">
+          {contentSections.map((section) => (
+            <div key={section.heading} className="mb-2">
+              <p className="px-3 pb-1.5 pt-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {section.heading}
+              </p>
+              {section.items.map((item) => {
+                const isLoginSlot = item.href === "/profile" && showLogin
+                const isLogoutSlot = item.href === "/profile" && showLogout
 
-            if (isLogoutSlot) {
-              return (
-                <form action={signOut} key={item.href}>
-                  <Button type="submit" variant="ghost" className="w-full justify-start gap-3">
-                    <LogOut className="h-5 w-5" />
-                    Toka
-                  </Button>
-                </form>
-              )
-            }
+                if (isLogoutSlot) {
+                  return (
+                    <form action={signOut} key={`${item.href}-logout`}>
+                      <Button type="submit" variant="ghost" className="w-full justify-start gap-3">
+                        <LogOut className="h-5 w-5" />
+                        Toka
+                      </Button>
+                    </form>
+                  )
+                }
 
-            const Icon = isLoginSlot ? LogIn : item.icon
-            const label = isLoginSlot ? "Ingia" : item.label
-            const href = isLoginSlot ? "/auth/login" : item.href
-            const isActive = !isLoginSlot && (pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href)))
+                const Icon = isLoginSlot ? LogIn : item.icon
+                const label = isLoginSlot ? "Ingia" : item.label
+                const href = isLoginSlot ? "/auth/login" : item.href
+                const isActive = !isLoginSlot && (pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href)))
 
-            return (
-              <Link key={item.href} href={href} onClick={() => setOpen(false)}>
-                <Button
-                  variant="ghost"
-                  className={cn("w-full justify-start gap-3", isActive && "bg-muted text-primary font-medium")}
-                >
-                  <Icon className="h-5 w-5" />
-                  {label}
-                </Button>
-              </Link>
-            )
-          })}
+                return (
+                  <Link key={item.href} href={href} onClick={() => setOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      className={cn("w-full justify-start gap-3", isActive && "bg-muted text-primary font-medium")}
+                    >
+                      <Icon className="h-5 w-5" />
+                      {label}
+                    </Button>
+                  </Link>
+                )
+              })}
+            </div>
+          ))}
         </nav>
 
         <Separator className="mt-4" />

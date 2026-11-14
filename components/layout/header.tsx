@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
-import { MobileNav } from "./mobile-nav"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,9 +48,7 @@ export function Header({ prayerOffsets = ZERO_PRAYER_OFFSETS }: { prayerOffsets?
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 pt-safe backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center gap-3 px-4">
-        <MobileNav prayerOffsets={prayerOffsets} />
-
-        <Link href="/" className="hidden items-center gap-2 lg:flex">
+        <Link href="/" className="flex items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary p-1.5">
             <Image src="/logo.png" alt="Tafakuri" width={40} height={40} className="h-full w-full object-contain" priority />
           </div>

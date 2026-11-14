@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { Header } from "@/components/layout/header"
 import { Footer } from "@/components/layout/footer"
 import { BottomNav } from "@/components/layout/bottom-nav"
+import { SplashScreen } from "@/components/layout/splash-screen"
 import { ServiceWorkerRegister } from "@/components/pwa/sw-register"
 import { InstallBanner } from "@/components/pwa/install-banner"
 import { ContentPrecache } from "@/components/pwa/content-precache"
@@ -72,6 +73,7 @@ export default async function RootLayout({
     <html lang="sw" dir="ltr" translate="no" suppressHydrationWarning>
       <body className={`${geist.variable} ${amiri.variable} font-sans antialiased pb-nav-safe`}>
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
+          <SplashScreen />
           <AutoTheme sunrise={settings.sunriseTime} sunset={settings.sunsetTime} />
           <Header prayerOffsets={prayerOffsets} />
           <main className="min-h-[calc(100dvh-4rem)]">{children}</main>

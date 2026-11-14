@@ -65,7 +65,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
   }
 
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-lg hover:border-primary h-full flex flex-col">
+    <Card className="overflow-hidden transition-all duration-200 hover:shadow-md hover:border-primary/40 active:scale-[0.98] h-full flex flex-col">
       <Link href={`/articles/${article.id}`}>
         <div className="aspect-video w-full overflow-hidden bg-muted">
           {article.imageUrl ? (

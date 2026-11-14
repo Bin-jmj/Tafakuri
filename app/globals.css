@@ -139,9 +139,12 @@
     @apply bg-background text-foreground;
   }
 
-  /* Added Arabic text styling */
+  /* Added Arabic text styling. NOTE: --font-arabic lives in @theme inline,
+     which only feeds Tailwind utilities — it is NOT emitted as a runtime
+     :root variable. Reference the next/font variable (--font-amiri,
+     defined on <body>) directly so the font actually applies. */
   .arabic-text {
-    font-family: var(--font-arabic);
+    font-family: var(--font-amiri), "Amiri", "Traditional Arabic", serif;
     direction: rtl;
     text-align: right;
     line-height: 2;

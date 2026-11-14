@@ -1,7 +1,7 @@
 // Maps Supabase row shapes (snake_case) to the app's existing camelCase types.
 
 import type { Database } from "@/lib/supabase/types"
-import type { Adhkar, Article, Book, Dua, Hadith, Occasion, OccasionItem, QuranVerse, Surah } from "@/lib/types"
+import type { Adhkar, Article, Audio, Book, Dua, Hadith, Occasion, OccasionItem, QuranVerse, Surah, Video, YoutubeChannel } from "@/lib/types"
 import type { RotationSettings } from "@/lib/utils/rotation"
 
 type Tables = Database["public"]["Tables"]
@@ -116,6 +116,55 @@ export function mapBook(row: Tables["media_items"]["Row"]): Book {
     publishedYear: row.published_year ?? undefined,
     downloadCount: row.download_count,
     addedDate: row.created_at,
+    isAvailable: row.is_available,
+  }
+}
+
+export function mapAudio(row: Tables["media_items"]["Row"]): Audio {
+  return {
+    id: row.id,
+    title: row.title,
+    author: row.author ?? "",
+    description: row.description ?? "",
+    categories: row.categories,
+    language: row.language,
+    coverUrl: row.cover_url ?? undefined,
+    fileUrl: row.storage_path ? `/api/media/file/${row.id}` : undefined,
+    durationSeconds: row.duration_seconds ?? undefined,
+    publishedYear: row.published_year ?? undefined,
+    downloadCount: row.download_count,
+    addedDate: row.created_at,
+    isAvailable: row.is_available,
+  }
+}
+
+export function mapVideo(row: Tables["media_items"]["Row"]): Video {
+  return {
+    id: row.id,
+    title: row.title,
+    author: row.author ?? "",
+    description: row.description ?? "",
+    categories: row.categories,
+    language: row.language,
+    coverUrl: row.cover_url ?? undefined,
+    fileUrl: row.storage_path ? `/api/media/file/${row.id}` : undefined,
+    durationSeconds: row.duration_seconds ?? undefined,
+    publishedYear: row.published_year ?? undefined,
+    downloadCount: row.download_count,
+    addedDate: row.created_at,
+    isAvailable: row.is_available,
+  }
+}
+
+export function mapYoutubeChannel(row: Tables["youtube_channels"]["Row"]): YoutubeChannel {
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description ?? "",
+    categories: row.categories,
+    playlistId: row.playlist_id,
+    channelUrl: row.channel_url ?? undefined,
+    coverUrl: row.cover_url ?? undefined,
     isAvailable: row.is_available,
   }
 }

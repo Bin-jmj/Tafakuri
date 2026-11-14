@@ -18,3 +18,20 @@ export function withExtension(filename: string, mimeType?: string | null): strin
   const ext = mimeType ? MIME_EXTENSIONS[mimeType.toLowerCase()] : undefined
   return ext ? `${filename}.${ext}` : filename
 }
+
+/** Returns the file extension for a MIME type, or "bin" if unknown. */
+export function extensionForMime(mimeType?: string | null): string {
+  if (!mimeType) return "bin"
+  return MIME_EXTENSIONS[mimeType.toLowerCase()] ?? "bin"
+}
+
+const ALLOWED_MEDIA_MIME_TYPES: Record<"book" | "audio" | "video", string[]> = {
+  book: ["application/pdf", "application/epub+zip"],
+  audio: ["audio/mpeg", "audio/mp3", "audio/wav", "audio/ogg", "audio/x-m4a", "audio/mp4"],
+  video: ["video/mp4", "video/webm", "video/quicktime"],
+}
+
+/** Whether a MIME type is one of the formats accepted for a given media type. */
+export function isAllowedMediaMimeType(type: "book" | "audio" | "video", mimeType: string): boolean {
+  return ALLOWED_MEDIA_MIME_TYPES[type].includes(mimeType.toLowerCase())
+}

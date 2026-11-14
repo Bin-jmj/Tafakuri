@@ -7,7 +7,7 @@
 
 import { createClient } from "@supabase/supabase-js"
 import { getDriveClient } from "../lib/drive/client"
-import { withExtension } from "../lib/utils/mime"
+import { extensionForMime } from "../lib/utils/mime"
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -45,8 +45,7 @@ async function migrate() {
       )
       const buffer = Buffer.from(driveRes.data as ArrayBuffer)
 
-      const name = withExtension(row.title, row.drive_mime_type)
-      const extension = name.includes(".") ? name.split(".").pop() : "bin"
+      const extension = extensionForMime(row.drive_mime_type)
       const path = `${row.type}/${row.id}.${extension}`
 
       const { error: uploadError } = await supabase.storage.from("media").upload(path, buffer, {

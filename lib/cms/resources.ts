@@ -231,7 +231,6 @@ function mediaResource(type: "book" | "audio" | "video"): CmsResourceConfig {
       categories: z.array(z.string()).min(1, "Chagua angalau kategoria moja"),
       language: z.string().min(1).default("Swahili"),
       cover_url: optionalText,
-      drive_file_id: optionalText,
       drive_mime_type: optionalText,
       storage_path: optionalText,
       file_size_bytes: z.coerce.number().int().optional().nullable(),
@@ -247,7 +246,6 @@ function mediaResource(type: "book" | "audio" | "video"): CmsResourceConfig {
       categories: [],
       language: "Swahili",
       cover_url: "",
-      drive_file_id: "",
       drive_mime_type: "",
       storage_path: "",
       file_size_bytes: null,
@@ -262,6 +260,54 @@ function mediaResource(type: "book" | "audio" | "video"): CmsResourceConfig {
 export const mediaBooksResource = mediaResource("book")
 export const mediaAudioResource = mediaResource("audio")
 export const mediaVideoResource = mediaResource("video")
+
+export const youtubeChannelsResource: CmsResourceConfig = {
+  key: "youtube-channels",
+  table: "youtube_channels",
+  titleSingular: "Kituo cha YouTube",
+  titlePlural: "Vituo vya YouTube",
+  description: "Simamia orodha za video (playlist) za YouTube zinazoonyeshwa kwenye programu",
+  addLabel: "Ongeza Kituo",
+  searchPlaceholder: "Tafuta kituo...",
+  primaryColumn: "name",
+  orderBy: { column: "sort_order", ascending: true },
+  fields: [
+    { name: "name", label: "Jina la Kituo", type: "text", showInTable: true, searchable: true },
+    { name: "description", label: "Maelezo", type: "textarea", searchable: true },
+    { name: "categories", label: "Kategoria", type: "multi-select", optionsKey: "media", showInTable: true },
+    {
+      name: "playlist_id",
+      label: "Playlist ID (YouTube)",
+      type: "text",
+      showInTable: true,
+      helpText: "Bandika ID ya playlist tu (mfano: PLxxxxxxxx), si kiungo kizima",
+    },
+    { name: "channel_url", label: "Kiungo cha Kituo (hiari)", type: "text" },
+    { name: "cover_url", label: "Picha ya Jalada", type: "image" },
+    { name: "sort_order", label: "Mpangilio", type: "number" },
+    { name: "is_available", label: "Inapatikana", type: "boolean", showInTable: true },
+  ],
+  schema: z.object({
+    name: z.string().min(1, "Jina linahitajika"),
+    description: optionalText,
+    categories: z.array(z.string()).default([]),
+    playlist_id: z.string().min(1, "Playlist ID inahitajika"),
+    channel_url: optionalText,
+    cover_url: optionalText,
+    sort_order: z.coerce.number().int().default(0),
+    is_available: z.boolean().default(true),
+  }),
+  defaultValues: {
+    name: "",
+    description: "",
+    categories: [],
+    playlist_id: "",
+    channel_url: "",
+    cover_url: "",
+    sort_order: 0,
+    is_available: true,
+  },
+}
 
 const CATEGORY_TYPES = [
   { label: "Hadithi", value: "hadith" },
@@ -361,4 +407,5 @@ export const cmsResources: Record<string, CmsResourceConfig> = {
   [mediaVideoResource.key]: mediaVideoResource,
   [categoriesResource.key]: categoriesResource,
   [occasionsResource.key]: occasionsResource,
+  [youtubeChannelsResource.key]: youtubeChannelsResource,
 }

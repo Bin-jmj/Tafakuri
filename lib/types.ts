@@ -88,6 +88,49 @@ export interface Book {
   isAvailable: boolean
 }
 
+export interface Audio {
+  id: string
+  title: string
+  author: string
+  description: string
+  categories: string[]
+  language: string
+  coverUrl?: string
+  fileUrl?: string
+  durationSeconds?: number
+  publishedYear?: string
+  downloadCount: number
+  addedDate: string
+  isAvailable: boolean
+}
+
+export interface Video {
+  id: string
+  title: string
+  author: string
+  description: string
+  categories: string[]
+  language: string
+  coverUrl?: string
+  fileUrl?: string
+  durationSeconds?: number
+  publishedYear?: string
+  downloadCount: number
+  addedDate: string
+  isAvailable: boolean
+}
+
+export interface YoutubeChannel {
+  id: string
+  name: string
+  description: string
+  categories: string[]
+  playlistId: string
+  channelUrl?: string
+  coverUrl?: string
+  isAvailable: boolean
+}
+
 export type OccasionContentType = "hadith" | "dua" | "adhkar" | "quran_verse"
 
 export interface Occasion {

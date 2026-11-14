@@ -238,6 +238,27 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["occasions"]["Row"]>
         Relationships: []
       }
+      youtube_channels: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          playlist_id: string
+          channel_url: string | null
+          cover_url: string | null
+          categories: string[]
+          sort_order: number
+          is_available: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: Partial<Database["public"]["Tables"]["youtube_channels"]["Row"]> & {
+          name: string
+          playlist_id: string
+        }
+        Update: Partial<Database["public"]["Tables"]["youtube_channels"]["Row"]>
+        Relationships: []
+      }
       occasion_items: {
         Row: {
           id: string
@@ -326,6 +347,7 @@ export interface Database {
       search_duas: { Args: { query: string; max_results?: number }; Returns: Database["public"]["Tables"]["duas"]["Row"][] }
       search_articles: { Args: { query: string; max_results?: number }; Returns: Database["public"]["Tables"]["articles"]["Row"][] }
       search_media_items: { Args: { query: string; max_results?: number }; Returns: Database["public"]["Tables"]["media_items"]["Row"][] }
+      increment_media_download_count: { Args: { media_id: string }; Returns: void }
     }
     Enums: { [_ in never]: never }
     CompositeTypes: { [_ in never]: never }

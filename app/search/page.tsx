@@ -205,5 +205,6 @@ function MediaResultCard({ item }: { item: { id: string; type: "book" | "audio" 
     </Card>
   )
 
-  return item.type === "book" ? <Link href={`/vitabu/${item.id}`}>{content}</Link> : content
+  const basePath = item.type === "book" ? "/vitabu" : item.type === "audio" ? "/sauti" : "/video"
+  return <Link href={`${basePath}/${item.id}`}>{content}</Link>
 }

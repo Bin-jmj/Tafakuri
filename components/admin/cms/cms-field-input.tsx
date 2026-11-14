@@ -10,6 +10,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { useToast } from "@/hooks/use-toast"
 import { FileCheck2, ImagePlus, Upload, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { createClient } from "@/lib/supabase/client"
 import type { CmsField, CmsFieldOption } from "@/lib/cms/types"
 
 interface CmsFieldInputProps {
@@ -225,12 +226,27 @@ function DriveFileFieldControl({ field, values, onChange }: { field: CmsField; v
   async function handleFile(file: File) {
     setUploading(true)
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("type", field.driveType ?? "book")
-      const res = await fetch("/api/storage/media", { method: "POST", body: formData })
+      const res = await fetch("/api/storage/media", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: file.name,
+          mimeType: file.type || "application/octet-stream",
+          type: field.driveType ?? "book",
+          sizeBytes: file.size,
+        }),
+      })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? "Imeshindikana kupakia faili")
+
+      // The signed URL lets the browser PUT the file straight to Supabase
+      // Storage - the bytes never pass through the Next.js server/proxy.
+      const supabase = createClient()
+      const { error } = await supabase.storage
+        .from("media")
+        .uploadToSignedUrl(json.storagePath, json.token, file, { contentType: json.mimeType })
+      if (error) throw error
+
       onChange({
         storage_path: json.storagePath,
         drive_mime_type: json.mimeType,

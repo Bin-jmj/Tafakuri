@@ -1,6 +1,7 @@
 // Nightly job (scheduled via pg_cron, see 0004_media_availability_cron_setup.sql).
-// For every media_item with a drive_file_id, checks whether the file still
-// exists in Google Drive and updates is_available accordingly.
+// For every media_item, checks whether its backing file still exists - on
+// Google Drive (legacy drive_file_id rows) or Supabase Storage (storage_path
+// rows, the current upload path) - and updates is_available accordingly.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
@@ -72,51 +73,52 @@ async function driveFileExists(fileId: string, accessToken: string): Promise<boo
   return json.trashed !== true
 }
 
+/** Returns true if the object still exists in the "media" Supabase Storage bucket. */
+async function storageFileExists(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: any,
+  storagePath: string,
+): Promise<boolean> {
+  const lastSlash = storagePath.lastIndexOf("/")
+  const dir = lastSlash === -1 ? "" : storagePath.slice(0, lastSlash)
+  const filename = lastSlash === -1 ? storagePath : storagePath.slice(lastSlash + 1)
+
+  const { data, error } = await supabase.storage.from("media").list(dir, { search: filename })
+  if (error) throw new Error(`Storage lookup for ${storagePath} failed: ${error.message}`)
+
+  return (data ?? []).some((entry: { name: string }) => entry.name === filename)
+}
+
 Deno.serve(async () => {
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
   )
 
-  const { data: tokenRow } = await supabase
-    .from("google_drive_tokens")
-    .select("refresh_token")
-    .eq("id", 1)
-    .maybeSingle()
+  let checked = 0
+  let updated = 0
+  const failures: string[] = []
 
-  if (!tokenRow?.refresh_token) {
-    return new Response(JSON.stringify({ error: "Google Drive is not connected" }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    })
-  }
-
-  const { data: items, error } = await supabase
+  // Storage-backed rows (current upload path) — no external auth needed.
+  const { data: storageItems, error: storageError } = await supabase
     .from("media_items")
-    .select("id, drive_file_id, is_available")
-    .not("drive_file_id", "is", null)
+    .select("id, storage_path, is_available")
+    .not("storage_path", "is", null)
 
-  if (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  if (storageError) {
+    return new Response(JSON.stringify({ error: storageError.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     })
   }
 
-  const refreshToken = await decryptRefreshToken(tokenRow.refresh_token)
-  const accessToken = await getDriveAccessToken(refreshToken)
-
-  let checked = 0
-  let updated = 0
-  const failures: string[] = []
-
-  for (const item of items ?? []) {
-    if (!item.drive_file_id) continue
+  for (const item of storageItems ?? []) {
+    if (!item.storage_path) continue
     checked++
 
     let exists: boolean
     try {
-      exists = await driveFileExists(item.drive_file_id, accessToken)
+      exists = await storageFileExists(supabase, item.storage_path)
     } catch (err) {
       failures.push(item.id)
       console.error(err)
@@ -129,6 +131,53 @@ Deno.serve(async () => {
         .update({ is_available: exists, updated_at: new Date().toISOString() })
         .eq("id", item.id)
       updated++
+    }
+  }
+
+  // Legacy Drive-backed rows — only attempt if Drive is still connected.
+  const { data: tokenRow } = await supabase
+    .from("google_drive_tokens")
+    .select("refresh_token")
+    .eq("id", 1)
+    .maybeSingle()
+
+  if (tokenRow?.refresh_token) {
+    const { data: driveItems, error: driveError } = await supabase
+      .from("media_items")
+      .select("id, drive_file_id, is_available")
+      .not("drive_file_id", "is", null)
+      .is("storage_path", null)
+
+    if (driveError) {
+      return new Response(JSON.stringify({ error: driveError.message }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      })
+    }
+
+    const refreshToken = await decryptRefreshToken(tokenRow.refresh_token)
+    const accessToken = await getDriveAccessToken(refreshToken)
+
+    for (const item of driveItems ?? []) {
+      if (!item.drive_file_id) continue
+      checked++
+
+      let exists: boolean
+      try {
+        exists = await driveFileExists(item.drive_file_id, accessToken)
+      } catch (err) {
+        failures.push(item.id)
+        console.error(err)
+        continue
+      }
+
+      if (exists !== item.is_available) {
+        await supabase
+          .from("media_items")
+          .update({ is_available: exists, updated_at: new Date().toISOString() })
+          .eq("id", item.id)
+        updated++
+      }
     }
   }
 

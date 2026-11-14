@@ -331,7 +331,7 @@ function CellValue({
   }
 
   if (field.type === "drive-file") {
-    return row.drive_file_id ? (
+    return row.storage_path ? (
       <Badge variant="secondary" className="text-xs">Limepakiwa</Badge>
     ) : (
       <Badge variant="outline" className="text-xs text-muted-foreground">Hamna</Badge>

@@ -7,7 +7,13 @@
  * server's error message on failure so callers can show a friendly toast.
  */
 export async function downloadFile(url: string, filename: string): Promise<void> {
-  const res = await fetch(url)
+  // Marks this fetch as an explicit download (vs. e.g. PdfReader's view-only
+  // Range requests against the same URL) so the server only counts real
+  // downloads - see app/api/media/file/[id]/route.ts.
+  const downloadUrl = new URL(url, window.location.origin)
+  downloadUrl.searchParams.set("download", "1")
+
+  const res = await fetch(downloadUrl)
   if (!res.ok) {
     const body = await res.json().catch(() => null)
     throw new Error(body?.error ?? "Imeshindikana kupakua faili")

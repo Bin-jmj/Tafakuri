@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Soma Qur'ani, Hadith, Dua na vitabu vya Kiislamu kwa Kiswahili",
     start_url: "/",
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#0f766e",
+    background_color: "#faf8f0",
+    theme_color: "#047857",
     icons: [
       { src: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png", purpose: "maskable" },

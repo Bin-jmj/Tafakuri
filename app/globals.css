@@ -4,70 +4,72 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color palette for Islamic app with calming teal and warm accents */
-  --background: oklch(0.99 0.005 180);
-  --foreground: oklch(0.2 0.01 240);
+  /* Tafakuri palette: deep emerald green + warm gold accents on a soft,
+     warm paper background — calmer and higher-contrast than the old teal. */
+  --background: oklch(0.985 0.008 100);
+  --foreground: oklch(0.24 0.025 160);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.01 240);
+  --card-foreground: oklch(0.24 0.025 160);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.01 240);
-  --primary: oklch(0.55 0.12 200);
-  --primary-foreground: oklch(0.99 0.005 180);
-  --secondary: oklch(0.95 0.01 180);
-  --secondary-foreground: oklch(0.2 0.01 240);
-  --muted: oklch(0.96 0.005 180);
-  --muted-foreground: oklch(0.5 0.01 240);
-  --accent: oklch(0.75 0.08 40);
-  --accent-foreground: oklch(0.2 0.01 240);
+  --popover-foreground: oklch(0.24 0.025 160);
+  --primary: oklch(0.52 0.115 158);
+  --primary-foreground: oklch(0.985 0.008 100);
+  --secondary: oklch(0.94 0.02 150);
+  --secondary-foreground: oklch(0.3 0.04 158);
+  --muted: oklch(0.955 0.012 120);
+  --muted-foreground: oklch(0.48 0.02 150);
+  --accent: oklch(0.8 0.11 80);
+  --accent-foreground: oklch(0.3 0.05 60);
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.99 0.005 180);
-  --border: oklch(0.9 0.005 180);
-  --input: oklch(0.9 0.005 180);
-  --ring: oklch(0.55 0.12 200);
-  --chart-1: oklch(0.55 0.12 200);
-  --chart-2: oklch(0.75 0.08 40);
-  --chart-3: oklch(0.65 0.1 160);
-  --chart-4: oklch(0.7 0.09 280);
-  --chart-5: oklch(0.6 0.11 320);
+  --destructive-foreground: oklch(0.99 0.005 100);
+  --border: oklch(0.9 0.015 130);
+  --input: oklch(0.9 0.015 130);
+  --ring: oklch(0.52 0.115 158);
+  --chart-1: oklch(0.52 0.115 158);
+  --chart-2: oklch(0.8 0.11 80);
+  --chart-3: oklch(0.6 0.08 185);
+  --chart-4: oklch(0.62 0.1 330);
+  --chart-5: oklch(0.66 0.12 45);
   --radius: 0.75rem;
-  --sidebar: oklch(0.99 0.005 180);
-  --sidebar-foreground: oklch(0.2 0.01 240);
-  --sidebar-primary: oklch(0.55 0.12 200);
-  --sidebar-primary-foreground: oklch(0.99 0.005 180);
-  --sidebar-accent: oklch(0.95 0.01 180);
-  --sidebar-accent-foreground: oklch(0.2 0.01 240);
-  --sidebar-border: oklch(0.9 0.005 180);
-  --sidebar-ring: oklch(0.55 0.12 200);
+  --sidebar: oklch(0.985 0.008 100);
+  --sidebar-foreground: oklch(0.24 0.025 160);
+  --sidebar-primary: oklch(0.52 0.115 158);
+  --sidebar-primary-foreground: oklch(0.985 0.008 100);
+  --sidebar-accent: oklch(0.94 0.02 150);
+  --sidebar-accent-foreground: oklch(0.3 0.04 158);
+  --sidebar-border: oklch(0.9 0.015 130);
+  --sidebar-ring: oklch(0.52 0.115 158);
 }
 
 .dark {
-  --background: oklch(0.15 0.01 240);
-  --foreground: oklch(0.95 0.005 180);
-  --card: oklch(0.18 0.01 240);
-  --card-foreground: oklch(0.95 0.005 180);
-  --popover: oklch(0.18 0.01 240);
-  --popover-foreground: oklch(0.95 0.005 180);
-  --primary: oklch(0.6 0.12 200);
-  --primary-foreground: oklch(0.15 0.01 240);
-  --secondary: oklch(0.25 0.01 240);
-  --secondary-foreground: oklch(0.95 0.005 180);
-  --muted: oklch(0.22 0.01 240);
-  --muted-foreground: oklch(0.65 0.01 240);
-  --accent: oklch(0.7 0.08 40);
-  --accent-foreground: oklch(0.15 0.01 240);
+  /* Deep green-charcoal surfaces with a brighter emerald + gold. */
+  --background: oklch(0.16 0.02 170);
+  --foreground: oklch(0.95 0.01 130);
+  --card: oklch(0.2 0.025 170);
+  --card-foreground: oklch(0.95 0.01 130);
+  --popover: oklch(0.22 0.025 170);
+  --popover-foreground: oklch(0.95 0.01 130);
+  --primary: oklch(0.72 0.12 155);
+  --primary-foreground: oklch(0.18 0.03 160);
+  --secondary: oklch(0.26 0.03 165);
+  --secondary-foreground: oklch(0.95 0.01 130);
+  --muted: oklch(0.24 0.02 170);
+  --muted-foreground: oklch(0.68 0.02 150);
+  --accent: oklch(0.78 0.1 80);
+  --accent-foreground: oklch(0.2 0.03 70);
   --destructive: oklch(0.5 0.2 27.325);
-  --destructive-foreground: oklch(0.95 0.005 180);
-  --border: oklch(0.25 0.01 240);
-  --input: oklch(0.25 0.01 240);
-  --ring: oklch(0.6 0.12 200);
-  --sidebar: oklch(0.18 0.01 240);
-  --sidebar-foreground: oklch(0.95 0.005 180);
-  --sidebar-primary: oklch(0.6 0.12 200);
-  --sidebar-primary-foreground: oklch(0.15 0.01 240);
-  --sidebar-accent: oklch(0.25 0.01 240);
-  --sidebar-accent-foreground: oklch(0.95 0.005 180);
-  --sidebar-border: oklch(0.25 0.01 240);
-  --sidebar-ring: oklch(0.6 0.12 200);
+  --destructive-foreground: oklch(0.95 0.01 130);
+  --border: oklch(0.28 0.02 165);
+  --input: oklch(0.28 0.02 165);
+  --ring: oklch(0.6 0.11 155);
+  --sidebar: oklch(0.2 0.025 170);
+  --sidebar-foreground: oklch(0.95 0.01 130);
+  --sidebar-primary: oklch(0.72 0.12 155);
+  --sidebar-primary-foreground: oklch(0.18 0.03 160);
+  --sidebar-accent: oklch(0.26 0.03 165);
+  --sidebar-accent-foreground: oklch(0.95 0.01 130);
+  --sidebar-border: oklch(0.28 0.02 165);
+  --sidebar-ring: oklch(0.6 0.11 155);
 }
 
 @theme inline {
@@ -138,6 +140,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 18%, transparent);
+  }
 
   /* Added Arabic text styling. NOTE: --font-arabic lives in @theme inline,
      which only feeds Tailwind utilities — it is NOT emitted as a runtime
@@ -154,6 +159,14 @@
   /* Native-app feel: no grey flash boxes on tap on mobile WebKit. */
   html {
     -webkit-tap-highlight-color: transparent;
+  }
+  /* Safety net: on phones a single stray wide element would expand the
+     whole layout viewport (content appears shifted/zoomed-out). Clip it
+     instead of creating a horizontal scroll container ("clip" keeps
+     position: sticky/fixed working, unlike "hidden" on html). */
+  html,
+  body {
+    overflow-x: clip;
   }
   a,
   button {

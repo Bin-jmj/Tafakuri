@@ -213,29 +213,35 @@ export function BookmarksList() {
 
       <Tabs defaultValue="quran" className="w-full">
         <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6">
-          <TabsTrigger value="quran" className="gap-2">
-            <BookOpen className="h-4 w-4" />
-            <span className="hidden sm:inline">Qur&apos;ani</span> ({content.quranVerses.length})
+          <TabsTrigger value="quran" className="min-w-0 gap-1.5">
+            <BookOpen className="shrink-0" />
+            <span className="hidden truncate sm:inline">Qur&apos;ani</span>
+            <span className="min-w-0 truncate tabular-nums">({content.quranVerses.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="hadith" className="gap-2">
-            <Scroll className="h-4 w-4" />
-            <span className="hidden sm:inline">Hadith</span> ({content.hadiths.length})
+          <TabsTrigger value="hadith" className="min-w-0 gap-1.5">
+            <Scroll className="shrink-0" />
+            <span className="hidden truncate sm:inline">Hadith</span>
+            <span className="min-w-0 truncate tabular-nums">({content.hadiths.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="dua" className="gap-2">
-            <HandHeart className="h-4 w-4" />
-            <span className="hidden sm:inline">Dua</span> ({content.duas.length})
+          <TabsTrigger value="dua" className="min-w-0 gap-1.5">
+            <HandHeart className="shrink-0" />
+            <span className="hidden truncate sm:inline">Dua</span>
+            <span className="min-w-0 truncate tabular-nums">({content.duas.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="adhkar" className="gap-2">
-            <Sparkles className="h-4 w-4" />
-            <span className="hidden sm:inline">Adhkar</span> ({content.adhkar.length})
+          <TabsTrigger value="adhkar" className="min-w-0 gap-1.5">
+            <Sparkles className="shrink-0" />
+            <span className="hidden truncate sm:inline">Adhkar</span>
+            <span className="min-w-0 truncate tabular-nums">({content.adhkar.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="articles" className="gap-2">
-            <FileText className="h-4 w-4" />
-            <span className="hidden sm:inline">Makala</span> ({content.articles.length})
+          <TabsTrigger value="articles" className="min-w-0 gap-1.5">
+            <FileText className="shrink-0" />
+            <span className="hidden truncate sm:inline">Makala</span>
+            <span className="min-w-0 truncate tabular-nums">({content.articles.length})</span>
           </TabsTrigger>
-          <TabsTrigger value="books" className="gap-2">
-            <Library className="h-4 w-4" />
-            <span className="hidden sm:inline">Vitabu</span> ({content.books.length})
+          <TabsTrigger value="books" className="min-w-0 gap-1.5">
+            <Library className="shrink-0" />
+            <span className="hidden truncate sm:inline">Vitabu</span>
+            <span className="min-w-0 truncate tabular-nums">({content.books.length})</span>
           </TabsTrigger>
         </TabsList>
 

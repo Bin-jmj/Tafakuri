@@ -53,7 +53,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#0f766e",
+  themeColor: "#047857",
   // Extend the app into the notch/home-bar area in standalone PWA mode;
   // layout components pad themselves with env(safe-area-inset-*).
   viewportFit: "cover",

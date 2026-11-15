@@ -56,13 +56,13 @@ export function Header({ prayerOffsets = ZERO_PRAYER_OFFSETS }: { prayerOffsets?
         </Link>
 
         {nextPrayer && (
-          <div className="flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-1.5 text-sm lg:hidden">
-            <Clock className="h-4 w-4 text-primary flex-shrink-0" />
-            <span className="font-medium">{nextPrayer.label}</span>
-            <span>&middot;</span>
-            <span className="text-muted-foreground">imebaki</span>
-            <span>&middot;</span>
-            <span className="font-medium tabular-nums">{nextPrayer.countdownHMS}</span>
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1.5 text-sm lg:hidden">
+            <Clock className="h-4 w-4 shrink-0 text-primary" />
+            <span className="min-w-0 truncate font-medium">{nextPrayer.label}</span>
+            <span className="hidden shrink-0 sm:inline">&middot;</span>
+            <span className="hidden text-muted-foreground sm:inline">imebaki</span>
+            <span className="hidden shrink-0 sm:inline">&middot;</span>
+            <span className="shrink-0 font-medium tabular-nums">{nextPrayer.countdownHMS}</span>
           </div>
         )}
 
